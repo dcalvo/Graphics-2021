@@ -98,11 +98,26 @@ Image32 Image32::randomDither(int bits) const {
 }
 
 Image32 Image32::orderedDither2X2(int bits) const {
-	///////////////////////////////
-	// Do ordered dithering here //
-	///////////////////////////////
-	THROW("method undefined");
-	return Image32();
+	constexpr double matrix[2][2] = {
+		{1 / 5.0, 3 / 5.0}, {4 / 5.0, 2 / 5.0}
+	};
+	const int factor = 255 / static_cast<int>(255 / (256 / pow(2, bits)));
+	for (int index = 0; index < this->_width * this->_height; index++) {
+		const int i = index % this->_width % 2;
+		const int j = index / this->_height % 2;
+		Pixel32 pixel = this->_pixels[index];
+		double r = pixel.r / 256.0 * (pow(2, bits) - 1);
+		r = r - floor(r) > matrix[i][j] ? ceil(r) : floor(r);
+		double g = pixel.g / 256.0 * (pow(2, bits) - 1);
+		g = g - floor(g) > matrix[i][j] ? ceil(g) : floor(g);
+		double b = pixel.b / 256.0 * (pow(2, bits) - 1);
+		b = b - floor(b) > matrix[i][j] ? ceil(b) : floor(b);
+		pixel.r = std::clamp(static_cast<int>(r) * factor, 0, 255);
+		pixel.g = std::clamp(static_cast<int>(g) * factor, 0, 255);
+		pixel.b = std::clamp(static_cast<int>(b) * factor, 0, 255);
+		this->_pixels[index] = pixel;
+	}
+	return Image32(*this);
 }
 
 Image32 Image32::floydSteinbergDither(int bits) const {
