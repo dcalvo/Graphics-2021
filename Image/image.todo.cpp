@@ -27,11 +27,14 @@ Image32 Image32::addRandomNoise(double noise) const {
 }
 
 Image32 Image32::brighten(double brightness) const {
-	/////////////////////////
-	// Do brightening here //
-	/////////////////////////
-	THROW("method undefined");
-	return Image32();
+	for (int i = 0; i < this->_width * this->_height; i++) {
+		Pixel32 pixel = this->_pixels[i];
+		pixel.r = std::clamp(static_cast<int>(pixel.r * brightness), 0, 255);
+		pixel.g = std::clamp(static_cast<int>(pixel.g * brightness), 0, 255);
+		pixel.b = std::clamp(static_cast<int>(pixel.b * brightness), 0, 255);
+		this->_pixels[i] = pixel;
+	}
+	return Image32(*this);
 }
 
 Image32 Image32::luminance(void) const {
