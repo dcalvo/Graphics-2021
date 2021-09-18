@@ -66,11 +66,15 @@ Image32 Image32::contrast(double contrast) const {
 }
 
 Image32 Image32::saturate(double saturation) const {
-	////////////////////////////////////
-	// Do saturation enhancement here //
-	////////////////////////////////////
-	THROW("method undefined");
-	return Image32();
+	for (int i = 0; i < this->_width * this->_height; i++) {
+		Pixel32 pixel = this->_pixels[i];
+		const double luminance = pixel.r * 0.3 + pixel.g * 0.59 + pixel.b * 0.11;
+		pixel.r = std::clamp(static_cast<int>((pixel.r - luminance) * saturation + luminance), 0, 255);
+		pixel.g = std::clamp(static_cast<int>((pixel.g - luminance) * saturation + luminance), 0, 255);
+		pixel.b = std::clamp(static_cast<int>((pixel.b - luminance) * saturation + luminance), 0, 255);
+		this->_pixels[i] = pixel;
+	}
+	return Image32(*this);
 }
 
 Image32 Image32::quantize(int bits) const {
