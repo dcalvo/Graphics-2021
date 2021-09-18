@@ -12,7 +12,7 @@ using namespace Image;
 // Image32 //
 /////////////
 Image32 Image32::addRandomNoise(double noise) const {
-	const int noise_interpolated = static_cast<int>(noise * 255);
+	const int noise_interpolated = static_cast<int>(255 * noise);
 	std::random_device rd_device;
 	std::mt19937 gen(rd_device());
 	const std::uniform_int_distribution<> distribution(-noise_interpolated, noise_interpolated);
@@ -78,7 +78,7 @@ Image32 Image32::saturate(double saturation) const {
 }
 
 Image32 Image32::quantize(int bits) const {
-	const int num_colors = std::pow(2, bits);
+	const int num_colors = pow(2, bits);
 	const int factor = 256 / num_colors;
 	const int quantized_ceiling = 255 / factor;
 	for (int i = 0; i < this->_width * this->_height; i++) {
@@ -92,11 +92,9 @@ Image32 Image32::quantize(int bits) const {
 }
 
 Image32 Image32::randomDither(int bits) const {
-	//////////////////////////////
-	// Do random dithering here //
-	//////////////////////////////
-	THROW("method undefined");
-	return Image32();
+	Image32 noisy_image = this->addRandomNoise(1 / pow(2, bits));
+	Image32 quantized_noisy_image = noisy_image.quantize(bits);
+	return quantized_noisy_image;
 }
 
 Image32 Image32::orderedDither2X2(int bits) const {
