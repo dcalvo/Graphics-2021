@@ -1,8 +1,9 @@
-#include <algorithm>
 #include "image.h"
+#include <algorithm>
 #include <stdlib.h>
 #include <math.h>
 #include <Util/exceptions.h>
+#include <random>
 
 using namespace Util;
 using namespace Image;
@@ -11,9 +12,18 @@ using namespace Image;
 // Image32 //
 /////////////
 Image32 Image32::addRandomNoise(double noise) const {
-	const int noise_interpolated = static_cast<int>(noise) * 255;
-	std::cout << noise_interpolated;
-	return Image32();
+	const int noise_interpolated = static_cast<int>(noise * 255);
+	std::random_device rd_device;
+	std::mt19937 gen(rd_device());
+	const std::uniform_int_distribution<> distribution(-noise_interpolated, noise_interpolated);
+	for (int i = 0; i < this->_width * this->_height; i++) {
+		Pixel32 pixel = this->_pixels[i];
+		pixel.r = std::clamp(pixel.r + distribution(gen), 0, 255);
+		pixel.g = std::clamp(pixel.g + distribution(gen), 0, 255);
+		pixel.b = std::clamp(pixel.b + distribution(gen), 0, 255);
+		this->_pixels[i] = pixel;
+	}
+	return Image32(*this);
 }
 
 Image32 Image32::brighten(double brightness) const {
