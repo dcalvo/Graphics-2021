@@ -49,11 +49,20 @@ Image32 Image32::luminance(void) const {
 }
 
 Image32 Image32::contrast(double contrast) const {
-	//////////////////////////////////
-	// Do contrast enhancement here //
-	//////////////////////////////////
-	THROW("method undefined");
-	return Image32();
+	double sum = 0;
+	for (int i = 0; i < this->_width * this->_height; i++) {
+		Pixel32 pixel = this->_pixels[i];
+		sum += pixel.r * 0.3 + pixel.g * 0.59 + pixel.b * 0.11;
+	}
+	const double avg_luminance = sum / (this->_width * this->_height);
+	for (int i = 0; i < this->_width * this->_height; i++) {
+		Pixel32 pixel = this->_pixels[i];
+		pixel.r = std::clamp(static_cast<int>((pixel.r - avg_luminance) * contrast + avg_luminance), 0, 255);
+		pixel.g = std::clamp(static_cast<int>((pixel.g - avg_luminance) * contrast + avg_luminance), 0, 255);
+		pixel.b = std::clamp(static_cast<int>((pixel.b - avg_luminance) * contrast + avg_luminance), 0, 255);
+		this->_pixels[i] = pixel;
+	}
+	return Image32(*this);
 }
 
 Image32 Image32::saturate(double saturation) const {
