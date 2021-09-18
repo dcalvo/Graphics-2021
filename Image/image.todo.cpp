@@ -38,11 +38,14 @@ Image32 Image32::brighten(double brightness) const {
 }
 
 Image32 Image32::luminance(void) const {
-	//////////////////////////////////
-	// Compute luminance image here //
-	//////////////////////////////////
-	THROW("method undefined");
-	return Image32();
+	for (int i = 0; i < this->_width * this->_height; i++) {
+		Pixel32 pixel = this->_pixels[i];
+		const unsigned char luminance = std::clamp(static_cast<int>(pixel.r * 0.3 + pixel.g * 0.59 + pixel.b * 0.11), 0,
+		                                           255);
+		pixel.r = pixel.g = pixel.b = luminance;
+		this->_pixels[i] = pixel;
+	}
+	return Image32(*this);
 }
 
 Image32 Image32::contrast(double contrast) const {
