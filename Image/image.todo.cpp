@@ -78,11 +78,17 @@ Image32 Image32::saturate(double saturation) const {
 }
 
 Image32 Image32::quantize(int bits) const {
-	//////////////////////////
-	// Do quantization here //
-	//////////////////////////
-	THROW("method undefined");
-	return Image32();
+	const int num_colors = std::pow(2, bits);
+	const int factor = 256 / num_colors;
+	const int quantized_ceiling = 255 / factor;
+	for (int i = 0; i < this->_width * this->_height; i++) {
+		Pixel32 pixel = this->_pixels[i];
+		pixel.r = std::clamp(pixel.r / factor * (255 / quantized_ceiling), 0, 255);
+		pixel.g = std::clamp(pixel.g / factor * (255 / quantized_ceiling), 0, 255);
+		pixel.b = std::clamp(pixel.b / factor * (255 / quantized_ceiling), 0, 255);
+		this->_pixels[i] = pixel;
+	}
+	return Image32(*this);
 }
 
 Image32 Image32::randomDither(int bits) const {
