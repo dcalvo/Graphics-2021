@@ -107,10 +107,10 @@ Image32 Image32::orderedDither2X2(int bits) const {
 		const int j = index / this->_height % 2;
 		Pixel32 pixel = this->_pixels[index];
 		double r = pixel.r / 256.0 * (pow(2, bits) - 1);
-		r = r - floor(r) > matrix[i][j] ? ceil(r) : floor(r);
 		double g = pixel.g / 256.0 * (pow(2, bits) - 1);
-		g = g - floor(g) > matrix[i][j] ? ceil(g) : floor(g);
 		double b = pixel.b / 256.0 * (pow(2, bits) - 1);
+		r = r - floor(r) > matrix[i][j] ? ceil(r) : floor(r);
+		g = g - floor(g) > matrix[i][j] ? ceil(g) : floor(g);
 		b = b - floor(b) > matrix[i][j] ? ceil(b) : floor(b);
 		pixel.r = std::clamp(static_cast<int>(r) * factor, 0, 255);
 		pixel.g = std::clamp(static_cast<int>(g) * factor, 0, 255);
@@ -121,11 +121,76 @@ Image32 Image32::orderedDither2X2(int bits) const {
 }
 
 Image32 Image32::floydSteinbergDither(int bits) const {
-	///////////////////////////////////////
-	// Do Floyd-Steinberg dithering here //
-	///////////////////////////////////////
-	THROW("method undefined");
-	return Image32();
+	const int num_colors = pow(2, bits);
+	const int factor = 256 / num_colors;
+	const int quantized_ceiling = 255 / factor;
+	std::vector working_array(this->_width, std::vector<Pixel32>(this->_height));
+	// transform 1d to 2d
+	for (int i = 0; i < this->_width * this->_height; i++) {
+		working_array[i % this->_width][i / this->_width] = this->_pixels[i];
+	}
+	// dither
+	for (int y = 0; y < this->_height; y++) {
+		for (int x = 0; x < this->_width; x++) {
+			Pixel32 pixel = working_array[x][y];
+			// errors
+			const int r_e = pixel.r - pixel.r / factor * (255 / quantized_ceiling);
+			const int g_e = pixel.g - pixel.g / factor * (255 / quantized_ceiling);
+			const int b_e = pixel.b - pixel.b / factor * (255 / quantized_ceiling);
+
+			// quantize
+			pixel.r = pixel.r / factor * (255 / quantized_ceiling);
+			pixel.g = pixel.g / factor * (255 / quantized_ceiling);
+			pixel.b = pixel.b / factor * (255 / quantized_ceiling);
+			working_array[x][y] = pixel;
+
+			// distribute error
+			if (x + 1 < this->_width) {
+				// right
+				working_array[x + 1][y].r = std::clamp(static_cast<int>(working_array[x + 1][y].r + r_e * (7 / 16.0)),
+				                                       0, 255);
+				working_array[x + 1][y].g = std::clamp(static_cast<int>(working_array[x + 1][y].g + g_e * (7 / 16.0)),
+				                                       0, 255);
+				working_array[x + 1][y].b = std::clamp(static_cast<int>(working_array[x + 1][y].b + b_e * (7 / 16.0)),
+				                                       0, 255);
+			}
+			if (y + 1 < this->_height) {
+				if (x > 0) {
+					// down left
+					working_array[x - 1][y + 1].r = std::clamp(
+						static_cast<int>(working_array[x - 1][y + 1].r + r_e * (3 / 16.0)), 0, 255);
+					working_array[x - 1][y + 1].g = std::clamp(
+						static_cast<int>(working_array[x - 1][y + 1].g + g_e * (3 / 16.0)), 0, 255);
+					working_array[x - 1][y + 1].b = std::clamp(
+						static_cast<int>(working_array[x - 1][y + 1].b + b_e * (3 / 16.0)), 0, 255);
+				}
+				// down
+				working_array[x][y + 1].r = std::clamp(static_cast<int>(working_array[x][y + 1].r + r_e * (5 / 16.0)),
+				                                       0, 255);
+				working_array[x][y + 1].g = std::clamp(static_cast<int>(working_array[x][y + 1].g + g_e * (5 / 16.0)),
+				                                       0, 255);
+				working_array[x][y + 1].b = std::clamp(static_cast<int>(working_array[x][y + 1].b + b_e * (5 / 16.0)),
+				                                       0, 255);
+				if (x + 1 < this->_width) {
+					// down right
+					working_array[x + 1][y + 1].r = std::clamp(
+						static_cast<int>(working_array[x + 1][y + 1].r + r_e * (1 / 16.0)), 0, 255);
+					working_array[x + 1][y + 1].g = std::clamp(
+						static_cast<int>(working_array[x + 1][y + 1].g + g_e * (1 / 16.0)), 0, 255);
+					working_array[x + 1][y + 1].b = std::clamp(
+						static_cast<int>(working_array[x + 1][y + 1].b + b_e * (1 / 16.0)), 0, 255);
+				}
+			}
+
+		}
+	}
+	// transform 2d to 1d
+	for (int y = 0; y < this->_height; y++) {
+		for (int x = 0; x < this->_width; x++) {
+			this->_pixels[x + y * this->_width] = working_array[x][y];
+		}
+	}
+	return Image32(*this);
 }
 
 Image32 Image32::blur3X3(void) const {
