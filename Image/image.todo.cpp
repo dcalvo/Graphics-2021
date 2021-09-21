@@ -247,11 +247,55 @@ Image32 Image32::blur3X3(void) const {
 }
 
 Image32 Image32::edgeDetect3X3(void) const {
-	////////////////////////////
-	// Do edge detection here //
-	////////////////////////////
-	THROW("method undefined");
-	return Image32();
+	constexpr double kernel[3][3] =
+	{
+		{-1 / 8.0, -1 / 8.0, -1 / 8.0},
+		{-1 / 8.0, 1.0, -1 / 8.0},
+		{-1 / 8.0, -1 / 8.0, -1 / 8.0}
+	};
+	constexpr int k_rows = 3, k_cols = 3;
+	std::vector original_image(this->_width, std::vector<Pixel32>(this->_height));
+	std::vector edge_image(this->_width, std::vector<Pixel32>(this->_height));
+	// transform 1d to 2d
+	for (int i = 0; i < this->_width * this->_height; i++) {
+		original_image[i % this->_width][i / this->_width] = this->_pixels[i];
+	}
+	// blur
+	for (int y = 0; y < this->_height; y++) {
+		for (int x = 0; x < this->_width; x++) {
+			double accumulator_r = 0;
+			double accumulator_g = 0;
+			double accumulator_b = 0;
+			// convolve
+			for (int i = 0; i < k_rows; i++) {
+				const int ii = k_rows - 1 - i; // reverse index (j, i) -> (i, j)
+				for (int j = 0; j < k_cols; j++) {
+					const int jj = k_cols - 1 - j; // reverse index (j, i) -> (i, j)
+
+					// overlay filter on top of input
+					const int yy = y + (k_cols / 2 - jj);
+					const int xx = x + (k_rows / 2 - ii);
+
+					if (yy >= 0 && yy < this->_height && xx >= 0 && xx < this->_width) {
+						accumulator_r += original_image[xx][yy].r * kernel[ii][jj];
+						accumulator_g += original_image[xx][yy].g * kernel[ii][jj];
+						accumulator_b += original_image[xx][yy].b * kernel[ii][jj];
+					} // else, it's a black pixel (zero padding)
+				}
+			}
+			edge_image[x][y].r = std::clamp(static_cast<int>(accumulator_r), 0, 255);
+			edge_image[x][y].g = std::clamp(static_cast<int>(accumulator_g), 0, 255);
+			edge_image[x][y].b = std::clamp(static_cast<int>(accumulator_b), 0, 255);
+		}
+	}
+	// transform 2d to 1d
+	for (int y = 0; y < this->_height; y++) {
+		for (int x = 0; x < this->_width; x++) {
+			this->_pixels[x + y * this->_width] = edge_image[x][y];
+		}
+	}
+	this->brighten(10);
+	return Image32(*this);
 }
 
 Image32 Image32::scaleNearest(double scaleFactor) const {
