@@ -297,11 +297,26 @@ Image32 Image32::funFilter(void) const {
 }
 
 Image32 Image32::crop(int x1, int y1, int x2, int y2) const {
-	//////////////////////
-	// Do cropping here //
-	//////////////////////
-	THROW("method undefined");
-	return Image32();
+	// 0,0 is upper left
+	const int left_x = x1 < x2 ? x1 : x2;
+	const int right_x = x1 > x2 ? x1 : x2;
+	const int top_y = y1 < y2 ? y1 : y2;
+	const int bot_y = y1 > y2 ? y1 : y2;
+	const int cropped_width = right_x - left_x;
+	const int cropped_height = bot_y - top_y;
+	if (left_x < 0 || top_y < 0 || right_x > this->_width || bot_y > this->_height)
+		THROW("corner outside of image");
+	const auto cropped_image = new Image32();
+	cropped_image->setSize(cropped_width, cropped_height);
+	int i = 0;
+	for (int y = 0; y < this->_height; y++) {
+		if (y < top_y || y >= bot_y) continue;
+		for (int x = 0; x < this->_width; x++) {
+			if (x < left_x || x >= right_x) continue ;
+			cropped_image->_pixels[i++] = this->_pixels[x + this->_width * y];
+		}
+	}
+	return *cropped_image;
 }
 
 Pixel32 Image32::nearestSample(Point2D p) const {
