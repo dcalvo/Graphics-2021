@@ -297,7 +297,7 @@ Image32 Image32::scaleBilinear(double scaleFactor) const {
 
 Image32 Image32::scaleGaussian(double scaleFactor) const {
 	const double variance = pow(1 / scaleFactor, 2);
-	const double radius = 2 / scaleFactor;
+	const double radius = 3 / scaleFactor;
 	auto scaled_image = Image32();
 	scaled_image.setSize(this->_width * scaleFactor, this->_height * scaleFactor);
 	for (int i = 0; i < scaled_image._width * scaled_image._height; i++) {
@@ -344,11 +344,19 @@ Image32 Image32::rotateBilinear(double angle) const {
 }
 
 Image32 Image32::rotateGaussian(double angle) const {
-	/////////////////////////////////////////////
-	// Do rotation with Gaussian sampling here //
-	/////////////////////////////////////////////
-	THROW("method undefined");
-	return Image32();
+	const double cos_angle = cos(angle * Pi / 180), sin_angle = sin(angle * Pi / 180);
+	auto rotated_image = Image32();
+	rotated_image.setSize(this->_width, this->_height);
+	const int center_x = (this->_width - 1) / 2, center_y = (this->_height - 1) / 2;
+	for (int i = 0; i < rotated_image._width * rotated_image._height; i++) {
+		const int x = i % rotated_image._width;
+		const int y = i / rotated_image._width;
+		const double source_x = (x - center_x) * cos_angle - (y - center_y) * sin_angle + center_x;
+		const double source_y = (x - center_x) * sin_angle + (y - center_y) * cos_angle + center_y;
+		const Pixel32 pixel = gaussianSample(Point2D(source_x, source_y), 1, 3);
+		rotated_image._pixels[i] = pixel;
+	}
+	return rotated_image;
 }
 
 void Image32::setAlpha(const Image32& matte) {
@@ -449,32 +457,31 @@ Pixel32 Image32::bilinearSample(Point2D p) const {
 }
 
 Pixel32 Image32::gaussianSample(Point2D p, double variance, double radius) const {
-	const double sigma = sqrt(variance);
 	std::vector kernel(2 * radius + 1, std::vector<double>(2 * radius + 1));
 	double sum = 0;
 	// create filter
 	for (int row = 0; row < kernel.size(); row++) {
 		for (int col = 0; col < kernel[row].size(); col++) {
-			const double a = (row - radius) / sigma;
-			const double b = (col - radius) / sigma;
-			const double n = std::exp(-0.5 * a * a) * std::exp(-0.5 * b * b);
+			const double a = pow(row - radius, 2);
+			const double b = pow(col - radius, 2);
+			const double n = std::exp(-0.5 * (a / variance)) * std::exp(-0.5 * (b / variance));
 			kernel[row][col] = n;
 			sum += n;
 		}
 	}
-	//// normalize
-	//for (auto& row : kernel) {
-	//	for (double& col : row) {
-	//		col /= sum;
-	//	}
-	//}
+	// normalize
+	for (auto& row : kernel) {
+		for (double& col : row) {
+			col /= sum;
+		}
+	}
 	// sample
 	double accumulator_r = 0;
 	double accumulator_g = 0;
 	double accumulator_b = 0;
+	sum = 0;
 	const double x = p[0];
 	const double y = p[1];
-	sum = 0;
 	// convolve
 	for (int i = 0; i < kernel.size(); i++) {
 		const int ii = kernel.size() - 1 - i; // reverse index (j, i) -> (i, j)
@@ -482,9 +489,8 @@ Pixel32 Image32::gaussianSample(Point2D p, double variance, double radius) const
 			const int jj = kernel[i].size() - 1 - j; // reverse index (j, i) -> (i, j)
 
 			// overlay filter on top of input
-			// use the nearest pixel at each sample location
-			const int yy = floor(y + (kernel[i].size() / 2 - jj) + 0.5);
-			const int xx = floor(x + (kernel.size() / 2 - ii) + 0.5);
+			const double yy = y + (kernel[i].size() / 2 - jj);
+			const double xx = x + (kernel.size() / 2 - ii);
 
 			if (yy >= 0 && yy < this->_height && xx >= 0 && xx < this->_width) {
 				const auto pixel = (*this)(xx, yy);
@@ -496,8 +502,8 @@ Pixel32 Image32::gaussianSample(Point2D p, double variance, double radius) const
 		}
 	}
 	auto pixel = Pixel32();
-	pixel.r = accumulator_r / sum;
-	pixel.g = accumulator_g / sum;
-	pixel.b = accumulator_b / sum;
+	pixel.r = std::clamp(static_cast<int>(accumulator_r / sum), 0, 255);
+	pixel.g = std::clamp(static_cast<int>(accumulator_g / sum), 0, 255);
+	pixel.b = std::clamp(static_cast<int>(accumulator_b / sum), 0, 255);
 	return pixel;
 }
