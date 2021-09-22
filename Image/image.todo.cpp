@@ -299,11 +299,17 @@ Image32 Image32::edgeDetect3X3(void) const {
 }
 
 Image32 Image32::scaleNearest(double scaleFactor) const {
-	/////////////////////////////////////////////////
-	// Do scaling with nearest-point sampling here //
-	/////////////////////////////////////////////////
-	THROW("method undefined");
-	return Image32();
+	auto scaled_image = Image32();
+	scaled_image.setSize(this->_width * scaleFactor, this->_height * scaleFactor);
+	for (int i = 0; i < scaled_image._width * scaled_image._height; i++) {
+		const int x = i % scaled_image._width;
+		const int y = i / scaled_image._width;
+		const double source_x = x / scaleFactor;
+		const double source_y = y / scaleFactor;
+		const Pixel32 pixel = nearestSample(Point2D(source_x, source_y));
+		scaled_image._pixels[i] = pixel;
+	}
+	return scaled_image;
 }
 
 Image32 Image32::scaleBilinear(double scaleFactor) const {
@@ -323,9 +329,19 @@ Image32 Image32::scaleGaussian(double scaleFactor) const {
 }
 
 Image32 Image32::rotateNearest(double angle) const {
-	//////////////////////////////////////////////////
-	// Do rotation with nearest-point sampling here //
-	//////////////////////////////////////////////////
+	/*const double cos_angle = cos(-angle * Pi / 180);
+	const double sin_angle = sin(-angle * Pi / 180);
+	auto rotated_image = Image32();
+	rotated_image.setSize(this->_width * 2, this->_height * 2);
+	for (int i = 0; i < rotated_image._width * rotated_image._height; i++) {
+		const int x = i % rotated_image._width;
+		const int y = i / rotated_image._width;
+		const double source_x = x * cos_angle - y * sin_angle;
+		const double source_y = x * sin_angle + y * cos_angle;
+		const Pixel32 pixel = nearestSample(Point2D(source_x, source_y));
+		rotated_image._pixels[i] = pixel;
+	}
+	return rotated_image;*/
 	THROW("method undefined");
 	return Image32();
 }
@@ -409,10 +425,10 @@ Image32 Image32::crop(int x1, int y1, int x2, int y2) const {
 }
 
 Pixel32 Image32::nearestSample(Point2D p) const {
-	//////////////////////////////
-	// Do nearest sampling here //
-	//////////////////////////////
-	THROW("method undefined");
+	const int nearest_x = floor(p[0] + 0.5);
+	const int nearest_y = floor(p[1] + 0.5);
+	if (nearest_x >= 0 && nearest_x < this->_width && nearest_y >= 0 && nearest_y < this->_height)
+		return (*this)(nearest_x, nearest_y);
 	return Pixel32();
 }
 
