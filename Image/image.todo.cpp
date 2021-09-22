@@ -335,29 +335,35 @@ Image32 Image32::scaleGaussian(double scaleFactor) const {
 }
 
 Image32 Image32::rotateNearest(double angle) const {
-	/*const double cos_angle = cos(-angle * Pi / 180);
-	const double sin_angle = sin(-angle * Pi / 180);
+	const double cos_angle = cos(angle * Pi / 180), sin_angle = sin(angle * Pi / 180);
 	auto rotated_image = Image32();
-	rotated_image.setSize(this->_width * 2, this->_height * 2);
+	rotated_image.setSize(this->_width, this->_height);
+	const int center_x = (this->_width - 1) / 2, center_y = (this->_height - 1) / 2;
 	for (int i = 0; i < rotated_image._width * rotated_image._height; i++) {
 		const int x = i % rotated_image._width;
 		const int y = i / rotated_image._width;
-		const double source_x = x * cos_angle - y * sin_angle;
-		const double source_y = x * sin_angle + y * cos_angle;
+		const double source_x = (x - center_x) * cos_angle - (y - center_y) * sin_angle + center_x;
+		const double source_y = (x - center_x) * sin_angle + (y - center_y) * cos_angle + center_y;
 		const Pixel32 pixel = nearestSample(Point2D(source_x, source_y));
 		rotated_image._pixels[i] = pixel;
 	}
-	return rotated_image;*/
-	THROW("method undefined");
-	return Image32();
+	return rotated_image;
 }
 
 Image32 Image32::rotateBilinear(double angle) const {
-	/////////////////////////////////////////////
-	// Do rotation with bilinear sampling here //
-	/////////////////////////////////////////////
-	THROW("method undefined");
-	return Image32();
+	const double cos_angle = cos(angle * Pi / 180), sin_angle = sin(angle * Pi / 180);
+	auto rotated_image = Image32();
+	rotated_image.setSize(this->_width, this->_height);
+	const int center_x = (this->_width - 1) / 2, center_y = (this->_height - 1) / 2;
+	for (int i = 0; i < rotated_image._width * rotated_image._height; i++) {
+		const int x = i % rotated_image._width;
+		const int y = i / rotated_image._width;
+		const double source_x = (x - center_x) * cos_angle - (y - center_y) * sin_angle + center_x;
+		const double source_y = (x - center_x) * sin_angle + (y - center_y) * cos_angle + center_y;
+		const Pixel32 pixel = bilinearSample(Point2D(source_x, source_y));
+		rotated_image._pixels[i] = pixel;
+	}
+	return rotated_image;
 }
 
 Image32 Image32::rotateGaussian(double angle) const {
@@ -441,7 +447,7 @@ Pixel32 Image32::nearestSample(Point2D p) const {
 Pixel32 Image32::bilinearSample(Point2D p) const {
 	const int u1 = floor(p[0]), u2 = u1 + 1;
 	const int v1 = floor(p[1]), v2 = v1 + 1;
-	if (u1 < 0 || u1 > this->_width || v1 < 0 || v1 > this->_height)
+	if (u1 < 0 || u1 >= this->_width || v1 < 0 || v1 >= this->_height)
 		return Pixel32();
 	const double du = p[0] - u1;
 	// (u1, v1) is known to be safe, unsure about the others
