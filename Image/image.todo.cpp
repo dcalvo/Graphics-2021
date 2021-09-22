@@ -1,5 +1,6 @@
 #include "image.h"
 #include <algorithm>
+#include <iomanip>
 #include <stdlib.h>
 #include <math.h>
 #include <Util/exceptions.h>
@@ -124,15 +125,11 @@ Image32 Image32::floydSteinbergDither(int bits) const {
 	const int num_colors = pow(2, bits);
 	const int factor = 256 / num_colors;
 	const int quantized_ceiling = 255 / factor;
-	std::vector working_array(this->_width, std::vector<Pixel32>(this->_height));
-	// transform 1d to 2d
-	for (int i = 0; i < this->_width * this->_height; i++) {
-		working_array[i % this->_width][i / this->_width] = this->_pixels[i];
-	}
+	auto dithered_image = Image32(*this);
 	// dither
 	for (int y = 0; y < this->_height; y++) {
 		for (int x = 0; x < this->_width; x++) {
-			Pixel32 pixel = working_array[x][y];
+			Pixel32 pixel = dithered_image(x, y);
 			// errors
 			const int r_e = pixel.r - pixel.r / factor * (255 / quantized_ceiling);
 			const int g_e = pixel.g - pixel.g / factor * (255 / quantized_ceiling);
@@ -142,55 +139,45 @@ Image32 Image32::floydSteinbergDither(int bits) const {
 			pixel.r = pixel.r / factor * (255 / quantized_ceiling);
 			pixel.g = pixel.g / factor * (255 / quantized_ceiling);
 			pixel.b = pixel.b / factor * (255 / quantized_ceiling);
-			working_array[x][y] = pixel;
+			dithered_image(x, y) = pixel;
 
 			// distribute error
 			if (x + 1 < this->_width) {
+				auto pixel = dithered_image(x + 1, y);
 				// right
-				working_array[x + 1][y].r = std::clamp(static_cast<int>(working_array[x + 1][y].r + r_e * (7 / 16.0)),
-				                                       0, 255);
-				working_array[x + 1][y].g = std::clamp(static_cast<int>(working_array[x + 1][y].g + g_e * (7 / 16.0)),
-				                                       0, 255);
-				working_array[x + 1][y].b = std::clamp(static_cast<int>(working_array[x + 1][y].b + b_e * (7 / 16.0)),
-				                                       0, 255);
+				pixel.r = std::clamp(static_cast<int>(pixel.r + r_e * (7 / 16.0)), 0, 255);
+				pixel.g = std::clamp(static_cast<int>(pixel.g + g_e * (7 / 16.0)), 0, 255);
+				pixel.b = std::clamp(static_cast<int>(pixel.b + b_e * (7 / 16.0)), 0, 255);
+				dithered_image(x + 1, y) = pixel;
 			}
 			if (y + 1 < this->_height) {
 				if (x > 0) {
+					auto pixel = dithered_image(x - 1, y + 1);
 					// down left
-					working_array[x - 1][y + 1].r = std::clamp(
-						static_cast<int>(working_array[x - 1][y + 1].r + r_e * (3 / 16.0)), 0, 255);
-					working_array[x - 1][y + 1].g = std::clamp(
-						static_cast<int>(working_array[x - 1][y + 1].g + g_e * (3 / 16.0)), 0, 255);
-					working_array[x - 1][y + 1].b = std::clamp(
-						static_cast<int>(working_array[x - 1][y + 1].b + b_e * (3 / 16.0)), 0, 255);
+					pixel.r = std::clamp(static_cast<int>(pixel.r + r_e * (3 / 16.0)), 0, 255);
+					pixel.g = std::clamp(static_cast<int>(pixel.g + g_e * (3 / 16.0)), 0, 255);
+					pixel.b = std::clamp(static_cast<int>(pixel.b + b_e * (3 / 16.0)), 0, 255);
+					dithered_image(x - 1, y + 1) = pixel;
 				}
+				auto pixel = dithered_image(x, y + 1);
 				// down
-				working_array[x][y + 1].r = std::clamp(static_cast<int>(working_array[x][y + 1].r + r_e * (5 / 16.0)),
-				                                       0, 255);
-				working_array[x][y + 1].g = std::clamp(static_cast<int>(working_array[x][y + 1].g + g_e * (5 / 16.0)),
-				                                       0, 255);
-				working_array[x][y + 1].b = std::clamp(static_cast<int>(working_array[x][y + 1].b + b_e * (5 / 16.0)),
-				                                       0, 255);
+				pixel.r = std::clamp(static_cast<int>(pixel.r + r_e * (5 / 16.0)), 0, 255);
+				pixel.g = std::clamp(static_cast<int>(pixel.g + g_e * (5 / 16.0)), 0, 255);
+				pixel.b = std::clamp(static_cast<int>(pixel.b + b_e * (5 / 16.0)), 0, 255);
+				dithered_image(x, y + 1) = pixel;
 				if (x + 1 < this->_width) {
+					auto pixel = dithered_image(x + 1, y + 1);
 					// down right
-					working_array[x + 1][y + 1].r = std::clamp(
-						static_cast<int>(working_array[x + 1][y + 1].r + r_e * (1 / 16.0)), 0, 255);
-					working_array[x + 1][y + 1].g = std::clamp(
-						static_cast<int>(working_array[x + 1][y + 1].g + g_e * (1 / 16.0)), 0, 255);
-					working_array[x + 1][y + 1].b = std::clamp(
-						static_cast<int>(working_array[x + 1][y + 1].b + b_e * (1 / 16.0)), 0, 255);
+					pixel.r = std::clamp(static_cast<int>(pixel.r + r_e * (1 / 16.0)), 0, 255);
+					pixel.g = std::clamp(static_cast<int>(pixel.g + g_e * (1 / 16.0)), 0, 255);
+					pixel.b = std::clamp(static_cast<int>(pixel.b + b_e * (1 / 16.0)), 0, 255);
+					dithered_image(x + 1, y + 1) = pixel;
 				}
 			}
 
 		}
 	}
-	// transform 2d to 1d
-	for (int y = 0; y < this->_height; y++) {
-		for (int x = 0; x < this->_width; x++) {
-			this->_pixels[x + y * this->_width] = working_array[x][y];
-		}
-	}
-	return Image32(*this);
+	return dithered_image;
 }
 
 Image32 Image32::blur3X3(void) const {
@@ -203,12 +190,8 @@ Image32 Image32::blur3X3(void) const {
 		{1 / 16.0, 2 / 16.0, 1 / 16.0}
 	};
 	constexpr int k_rows = 3, k_cols = 3;
-	std::vector original_image(this->_width, std::vector<Pixel32>(this->_height));
-	std::vector blurred_image(this->_width, std::vector<Pixel32>(this->_height));
-	// transform 1d to 2d
-	for (int i = 0; i < this->_width * this->_height; i++) {
-		original_image[i % this->_width][i / this->_width] = this->_pixels[i];
-	}
+	auto blurred_image = Image32();
+	blurred_image.setSize(this->_width, this->_height);
 	// blur
 	for (int y = 0; y < this->_height; y++) {
 		for (int x = 0; x < this->_width; x++) {
@@ -226,24 +209,19 @@ Image32 Image32::blur3X3(void) const {
 					const int xx = x + (k_rows / 2 - ii);
 
 					if (yy >= 0 && yy < this->_height && xx >= 0 && xx < this->_width) {
-						accumulator_r += original_image[xx][yy].r * kernel[ii][jj];
-						accumulator_g += original_image[xx][yy].g * kernel[ii][jj];
-						accumulator_b += original_image[xx][yy].b * kernel[ii][jj];
+						const auto pixel = (*this)(xx, yy);
+						accumulator_r += pixel.r * kernel[ii][jj];
+						accumulator_g += pixel.g * kernel[ii][jj];
+						accumulator_b += pixel.b * kernel[ii][jj];
 					} // else, it's a black pixel (zero padding)
 				}
 			}
-			blurred_image[x][y].r = std::clamp(static_cast<int>(accumulator_r), 0, 255);
-			blurred_image[x][y].g = std::clamp(static_cast<int>(accumulator_g), 0, 255);
-			blurred_image[x][y].b = std::clamp(static_cast<int>(accumulator_b), 0, 255);
+			blurred_image(x, y).r = std::clamp(static_cast<int>(accumulator_r), 0, 255);
+			blurred_image(x, y).g = std::clamp(static_cast<int>(accumulator_g), 0, 255);
+			blurred_image(x, y).b = std::clamp(static_cast<int>(accumulator_b), 0, 255);
 		}
 	}
-	// transform 2d to 1d
-	for (int y = 0; y < this->_height; y++) {
-		for (int x = 0; x < this->_width; x++) {
-			this->_pixels[x + y * this->_width] = blurred_image[x][y];
-		}
-	}
-	return Image32(*this);
+	return blurred_image;
 }
 
 Image32 Image32::edgeDetect3X3(void) const {
@@ -254,12 +232,8 @@ Image32 Image32::edgeDetect3X3(void) const {
 		{-1 / 8.0, -1 / 8.0, -1 / 8.0}
 	};
 	constexpr int k_rows = 3, k_cols = 3;
-	std::vector original_image(this->_width, std::vector<Pixel32>(this->_height));
-	std::vector edge_image(this->_width, std::vector<Pixel32>(this->_height));
-	// transform 1d to 2d
-	for (int i = 0; i < this->_width * this->_height; i++) {
-		original_image[i % this->_width][i / this->_width] = this->_pixels[i];
-	}
+	auto edge_image = Image32();
+	edge_image.setSize(this->_width, this->_height);
 	// blur
 	for (int y = 0; y < this->_height; y++) {
 		for (int x = 0; x < this->_width; x++) {
@@ -277,25 +251,20 @@ Image32 Image32::edgeDetect3X3(void) const {
 					const int xx = x + (k_rows / 2 - ii);
 
 					if (yy >= 0 && yy < this->_height && xx >= 0 && xx < this->_width) {
-						accumulator_r += original_image[xx][yy].r * kernel[ii][jj];
-						accumulator_g += original_image[xx][yy].g * kernel[ii][jj];
-						accumulator_b += original_image[xx][yy].b * kernel[ii][jj];
+						const auto pixel = (*this)(xx, yy);
+						accumulator_r += pixel.r * kernel[ii][jj];
+						accumulator_g += pixel.g * kernel[ii][jj];
+						accumulator_b += pixel.b * kernel[ii][jj];
 					} // else, it's a black pixel (zero padding)
 				}
 			}
-			edge_image[x][y].r = std::clamp(static_cast<int>(accumulator_r), 0, 255);
-			edge_image[x][y].g = std::clamp(static_cast<int>(accumulator_g), 0, 255);
-			edge_image[x][y].b = std::clamp(static_cast<int>(accumulator_b), 0, 255);
+			edge_image(x, y).r = std::clamp(static_cast<int>(accumulator_r), 0, 255);
+			edge_image(x, y).g = std::clamp(static_cast<int>(accumulator_g), 0, 255);
+			edge_image(x, y).b = std::clamp(static_cast<int>(accumulator_b), 0, 255);
 		}
 	}
-	// transform 2d to 1d
-	for (int y = 0; y < this->_height; y++) {
-		for (int x = 0; x < this->_width; x++) {
-			this->_pixels[x + y * this->_width] = edge_image[x][y];
-		}
-	}
-	this->brighten(10);
-	return Image32(*this);
+	edge_image.brighten(10);
+	return edge_image;
 }
 
 Image32 Image32::scaleNearest(double scaleFactor) const {
@@ -327,11 +296,19 @@ Image32 Image32::scaleBilinear(double scaleFactor) const {
 }
 
 Image32 Image32::scaleGaussian(double scaleFactor) const {
-	////////////////////////////////////////////
-	// Do scaling with Gaussian sampling here //
-	////////////////////////////////////////////
-	THROW("method undefined");
-	return Image32();
+	const double variance = pow(1 / scaleFactor, 2);
+	const double radius = 2 / scaleFactor;
+	auto scaled_image = Image32();
+	scaled_image.setSize(this->_width * scaleFactor, this->_height * scaleFactor);
+	for (int i = 0; i < scaled_image._width * scaled_image._height; i++) {
+		const int x = i % scaled_image._width;
+		const int y = i / scaled_image._width;
+		const double source_x = x / scaleFactor;
+		const double source_y = y / scaleFactor;
+		const Pixel32 pixel = gaussianSample(Point2D(source_x, source_y), variance, radius);
+		scaled_image._pixels[i] = pixel;
+	}
+	return scaled_image;
 }
 
 Image32 Image32::rotateNearest(double angle) const {
@@ -472,9 +449,55 @@ Pixel32 Image32::bilinearSample(Point2D p) const {
 }
 
 Pixel32 Image32::gaussianSample(Point2D p, double variance, double radius) const {
-	///////////////////////////////
-	// Do Gaussian sampling here //
-	///////////////////////////////
-	THROW("method undefined");
-	return Pixel32();
+	const double sigma = sqrt(variance);
+	std::vector kernel(2 * radius + 1, std::vector<double>(2 * radius + 1));
+	double sum = 0;
+	// create filter
+	for (int row = 0; row < kernel.size(); row++) {
+		for (int col = 0; col < kernel[row].size(); col++) {
+			const double a = (row - radius) / sigma;
+			const double b = (col - radius) / sigma;
+			const double n = std::exp(-0.5 * a * a) * std::exp(-0.5 * b * b);
+			kernel[row][col] = n;
+			sum += n;
+		}
+	}
+	//// normalize
+	//for (auto& row : kernel) {
+	//	for (double& col : row) {
+	//		col /= sum;
+	//	}
+	//}
+	// sample
+	double accumulator_r = 0;
+	double accumulator_g = 0;
+	double accumulator_b = 0;
+	const double x = p[0];
+	const double y = p[1];
+	sum = 0;
+	// convolve
+	for (int i = 0; i < kernel.size(); i++) {
+		const int ii = kernel.size() - 1 - i; // reverse index (j, i) -> (i, j)
+		for (int j = 0; j < kernel[i].size(); j++) {
+			const int jj = kernel[i].size() - 1 - j; // reverse index (j, i) -> (i, j)
+
+			// overlay filter on top of input
+			// use the nearest pixel at each sample location
+			const int yy = floor(y + (kernel[i].size() / 2 - jj) + 0.5);
+			const int xx = floor(x + (kernel.size() / 2 - ii) + 0.5);
+
+			if (yy >= 0 && yy < this->_height && xx >= 0 && xx < this->_width) {
+				const auto pixel = (*this)(xx, yy);
+				accumulator_r += pixel.r * kernel[ii][jj];
+				accumulator_g += pixel.g * kernel[ii][jj];
+				accumulator_b += pixel.b * kernel[ii][jj];
+				sum += kernel[ii][jj];
+			} // else, it's a black pixel (zero padding)
+		}
+	}
+	auto pixel = Pixel32();
+	pixel.r = accumulator_r / sum;
+	pixel.g = accumulator_g / sum;
+	pixel.b = accumulator_b / sum;
+	return pixel;
 }
