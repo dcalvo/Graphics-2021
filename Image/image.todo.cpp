@@ -395,11 +395,26 @@ Image32 Image32::warp(const OrientedLineSegmentPairs& olsp) const {
 }
 
 Image32 Image32::funFilter(void) const {
-	////////////////////////////
-	// Do the fun-filter here //
-	////////////////////////////
-	THROW("method undefined");
-	return Image32();
+	// does a swirl based on the size of the image
+	const int radius = std::min(this->_width / 2, this->_height/2);
+	const double intensity = std::max(0.0025 * this->_width, 0.0025 * this->_height);
+	auto swirl_image = Image32();
+	swirl_image.setSize(this->_width, this->_height);
+	const int center_x = (this->_width - 1) / 2, center_y = (this->_height - 1) / 2;
+	for (int i = 0; i < swirl_image._width * swirl_image._height; i++) {
+		const int x = i % swirl_image._width, y = i / swirl_image._width;
+		const double source_x = x - center_x, source_y = y - center_y;
+		const double distance = sqrt(pow(source_x, 2) + pow(source_y, 2));
+		double angle = atan2(source_y, source_x);
+		const double twist_amount = 1 - (distance / radius);
+		const double twist_angle = intensity * twist_amount;
+		angle += twist_angle;
+		const double u = cos(angle) * distance + center_x;
+		const double v = sin(angle) * distance + center_y;
+		const Pixel32 pixel = bilinearSample(Point2D(u, v));
+		swirl_image._pixels[i] = pixel;
+	}
+	return swirl_image;
 }
 
 Image32 Image32::crop(int x1, int y1, int x2, int y2) const {
