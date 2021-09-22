@@ -313,11 +313,17 @@ Image32 Image32::scaleNearest(double scaleFactor) const {
 }
 
 Image32 Image32::scaleBilinear(double scaleFactor) const {
-	////////////////////////////////////////////
-	// Do scaling with bilinear sampling here //
-	////////////////////////////////////////////
-	THROW("method undefined");
-	return Image32();
+	auto scaled_image = Image32();
+	scaled_image.setSize(this->_width * scaleFactor, this->_height * scaleFactor);
+	for (int i = 0; i < scaled_image._width * scaled_image._height; i++) {
+		const int x = i % scaled_image._width;
+		const int y = i / scaled_image._width;
+		const double source_x = x / scaleFactor;
+		const double source_y = y / scaleFactor;
+		const Pixel32 pixel = bilinearSample(Point2D(source_x, source_y));
+		scaled_image._pixels[i] = pixel;
+	}
+	return scaled_image;
 }
 
 Image32 Image32::scaleGaussian(double scaleFactor) const {
@@ -433,11 +439,30 @@ Pixel32 Image32::nearestSample(Point2D p) const {
 }
 
 Pixel32 Image32::bilinearSample(Point2D p) const {
-	///////////////////////////////
-	// Do bilinear sampling here //
-	///////////////////////////////
-	THROW("method undefined");
-	return Pixel32();
+	const int u1 = floor(p[0]), u2 = u1 + 1;
+	const int v1 = floor(p[1]), v2 = v1 + 1;
+	if (u1 < 0 || u1 > this->_width || v1 < 0 || v1 > this->_height)
+		return Pixel32();
+	const double du = p[0] - u1;
+	// (u1, v1) is known to be safe, unsure about the others
+	const Pixel32 src_u1_v1 = (*this)(u1, v1);
+	const Pixel32 src_u2_v1 = u2 >= 0 && u2 < this->_width ? (*this)(u2, v1) : src_u1_v1;
+	const double a_r = src_u1_v1.r * (1 - du) + src_u2_v1.r * du;
+	const double a_g = src_u1_v1.g * (1 - du) + src_u2_v1.g * du;
+	const double a_b = src_u1_v1.b * (1 - du) + src_u2_v1.b * du;
+	const Pixel32 src_u1_v2 = v2 >= 0 && v2 < this->_height ? (*this)(u1, v2) : src_u1_v1;
+	const Pixel32 src_u2_v2 = u2 >= 0 && u2 < this->_width && v2 >= 0 && v2 < this->_height
+		                          ? (*this)(u2, v2)
+		                          : src_u1_v1;
+	const double b_r = src_u1_v2.r * (1 - du) + src_u2_v2.r * du;
+	const double b_g = src_u1_v2.g * (1 - du) + src_u2_v2.g * du;
+	const double b_b = src_u1_v2.b * (1 - du) + src_u2_v2.b * du;
+	const double dv = p[1] - v1;
+	auto dst = Pixel32();
+	dst.r = std::clamp(static_cast<int>(a_r * (1 - dv) + b_r * dv), 0, 255);
+	dst.g = std::clamp(static_cast<int>(a_g * (1 - dv) + b_g * dv), 0, 255);
+	dst.b = std::clamp(static_cast<int>(a_b * (1 - dv) + b_b * dv), 0, 255);
+	return dst;
 }
 
 Pixel32 Image32::gaussianSample(Point2D p, double variance, double radius) const {
