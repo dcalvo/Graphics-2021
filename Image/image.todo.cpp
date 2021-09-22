@@ -360,18 +360,22 @@ Image32 Image32::rotateGaussian(double angle) const {
 }
 
 void Image32::setAlpha(const Image32& matte) {
-	///////////////////////////
-	// Set alpha values here //
-	///////////////////////////
-	THROW("method undefined");
+	for (int i = 0; i < this->_width * this->_height; i++) {
+		this->_pixels[i].a = 255 - matte._pixels[i].b;
+	}
 }
 
 Image32 Image32::composite(const Image32& overlay) const {
-	/////////////////////////
-	// Do compositing here //
-	/////////////////////////
-	THROW("method undefined");
-	return Image32();
+	for (int i = 0; i < this->_width * this->_height; i++) {
+		const double foreground_opacity = overlay._pixels[i].a / 255.0;
+		const double blended_r = foreground_opacity * overlay._pixels[i].r + (1 - foreground_opacity) * this->_pixels[i].r;
+		const double blended_g = foreground_opacity * overlay._pixels[i].g + (1 - foreground_opacity) * this->_pixels[i].g;
+		const double blended_b = foreground_opacity * overlay._pixels[i].b + (1 - foreground_opacity) * this->_pixels[i].b;
+		this->_pixels[i].r = blended_r;
+		this->_pixels[i].g = blended_g;
+		this->_pixels[i].b = blended_b;
+	}
+	return *this;
 }
 
 Image32 Image32::CrossDissolve(const Image32& source, const Image32& destination, double blendWeight) {
