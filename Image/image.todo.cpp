@@ -379,19 +379,26 @@ Image32 Image32::composite(const Image32& overlay) const {
 }
 
 Image32 Image32::CrossDissolve(const Image32& source, const Image32& destination, double blendWeight) {
-	////////////////////////////
-	// Do cross-dissolve here //
-	////////////////////////////
-	THROW("method undefined");
-	return Image32();
+	Image32 blended_image = Image32();
+	blended_image.setSize(source._width, source._height);
+	for (int i = 0; i < source._width * source._height; i++) {
+		blended_image._pixels[i].r = (1 - blendWeight) * source._pixels[i].r + blendWeight * destination._pixels[i].r;
+		blended_image._pixels[i].g = (1 - blendWeight) * source._pixels[i].g + blendWeight * destination._pixels[i].g;
+		blended_image._pixels[i].b = (1 - blendWeight) * source._pixels[i].b + blendWeight * destination._pixels[i].b;
+	}
+	return blended_image;
 }
 
 Image32 Image32::warp(const OrientedLineSegmentPairs& olsp) const {
-	/////////////////////
-	// Do warping here //
-	/////////////////////
-	THROW("method undefined");
-	return Image32();
+	Image32 warped_image = Image32();
+	warped_image.setSize(this->_width, this->_height);
+	for (int i = 0; i < this->_width * this->_height; i++) {
+		const Point2D dest_point = Point2D(i % this->_width, i / this->_width);
+		const Point2D source_point = olsp.getSourcePosition(dest_point);
+		const Pixel32 source_pixel = bilinearSample(source_point);
+		warped_image._pixels[i] = source_pixel;
+	}
+	return warped_image;
 }
 
 Image32 Image32::funFilter(void) const {
