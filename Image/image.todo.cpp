@@ -415,15 +415,19 @@ Image32 Image32::funFilter(void) const {
 		const int x = i % swirl_image._width, y = i / swirl_image._width;
 		const double source_x = x - center_x, source_y = y - center_y;
 		const double distance = sqrt(pow(source_x, 2) + pow(source_y, 2));
-		double angle = atan2(source_y, source_x);
+		double angle = atan2(source_y, source_x) * 3;
 		const double twist_amount = 1 - (distance / radius);
 		const double twist_angle = intensity * twist_amount;
 		angle += twist_angle;
 		const double u = cos(angle) * distance + center_x;
 		const double v = sin(angle) * distance + center_y;
-		const Pixel32 pixel = bilinearSample(Point2D(u, v));
+		Pixel32 pixel = bilinearSample(Point2D(u, v));
+		pixel.r = std::clamp(static_cast<int>(cos(angle) * pixel.r), 0, 255);
+		pixel.g = std::clamp(static_cast<int>(sin(angle) * pixel.g), 0, 255);
+		pixel.b = std::clamp(static_cast<int>(sin(angle) * cos(angle) * pixel.b), 0, 255);
 		swirl_image._pixels[i] = pixel;
 	}
+	swirl_image = swirl_image.floydSteinbergDither(1);
 	return swirl_image;
 }
 
