@@ -1,0 +1,21 @@
+ .\Assignment1.exe --in .\input\morph\cat.jpg --bnMorph .\input\morph\rock.jpg .\input\morph\cat_rock.txt 0 --out .\input\morph\0.bmp
+ .\Assignment1.exe --in .\input\morph\cat.jpg --bnMorph .\input\morph\rock.jpg .\input\morph\cat_rock.txt 0.05 --out .\input\morph\1.bmp
+ .\Assignment1.exe --in .\input\morph\cat.jpg --bnMorph .\input\morph\rock.jpg .\input\morph\cat_rock.txt 0.1 --out .\input\morph\2.bmp
+ .\Assignment1.exe --in .\input\morph\cat.jpg --bnMorph .\input\morph\rock.jpg .\input\morph\cat_rock.txt 0.15 --out .\input\morph\3.bmp
+ .\Assignment1.exe --in .\input\morph\cat.jpg --bnMorph .\input\morph\rock.jpg .\input\morph\cat_rock.txt 0.2 --out .\input\morph\4.bmp
+ .\Assignment1.exe --in .\input\morph\cat.jpg --bnMorph .\input\morph\rock.jpg .\input\morph\cat_rock.txt 0.25 --out .\input\morph\5.bmp
+ .\Assignment1.exe --in .\input\morph\cat.jpg --bnMorph .\input\morph\rock.jpg .\input\morph\cat_rock.txt 0.3 --out .\input\morph\6.bmp
+ .\Assignment1.exe --in .\input\morph\cat.jpg --bnMorph .\input\morph\rock.jpg .\input\morph\cat_rock.txt 0.35 --out .\input\morph\7.bmp
+ .\Assignment1.exe --in .\input\morph\cat.jpg --bnMorph .\input\morph\rock.jpg .\input\morph\cat_rock.txt 0.4 --out .\input\morph\8.bmp
+ .\Assignment1.exe --in .\input\morph\cat.jpg --bnMorph .\input\morph\rock.jpg .\input\morph\cat_rock.txt 0.45 --out .\input\morph\9.bmp
+ .\Assignment1.exe --in .\input\morph\cat.jpg --bnMorph .\input\morph\rock.jpg .\input\morph\cat_rock.txt 0.5 --out .\input\morph\10.bmp
+.\Assignment1.exe --in .\input\morph\cat.jpg --bnMorph .\input\morph\rock.jpg .\input\morph\cat_rock.txt 0.55 --out .\input\morph\11.bmp
+.\Assignment1.exe --in .\input\morph\cat.jpg --bnMorph .\input\morph\rock.jpg .\input\morph\cat_rock.txt 0.6 --out .\input\morph\12.bmp
+.\Assignment1.exe --in .\input\morph\cat.jpg --bnMorph .\input\morph\rock.jpg .\input\morph\cat_rock.txt 0.65 --out .\input\morph\13.bmp
+.\Assignment1.exe --in .\input\morph\cat.jpg --bnMorph .\input\morph\rock.jpg .\input\morph\cat_rock.txt 0.7 --out .\input\morph\14.bmp
+.\Assignment1.exe --in .\input\morph\cat.jpg --bnMorph .\input\morph\rock.jpg .\input\morph\cat_rock.txt 0.75 --out .\input\morph\15.bmp
+.\Assignment1.exe --in .\input\morph\cat.jpg --bnMorph .\input\morph\rock.jpg .\input\morph\cat_rock.txt 0.8 --out .\input\morph\16.bmp
+.\Assignment1.exe --in .\input\morph\cat.jpg --bnMorph .\input\morph\rock.jpg .\input\morph\cat_rock.txt 0.85 --out .\input\morph\17.bmp
+.\Assignment1.exe --in .\input\morph\cat.jpg --bnMorph .\input\morph\rock.jpg .\input\morph\cat_rock.txt 0.9 --out .\input\morph\18.bmp
+.\Assignment1.exe --in .\input\morph\cat.jpg --bnMorph .\input\morph\rock.jpg .\input\morph\cat_rock.txt 0.95 --out .\input\morph\19.bmp
+.\Assignment1.exe --in .\input\morph\cat.jpg --bnMorph .\input\morph\rock.jpg .\input\morph\cat_rock.txt 1 --out .\input\morph\20.bmp

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Assignment 1: Image Processing Writeup</title>
+  </head>
+  <body>
+    <div id="center">
+      <h1>Assignment 1: Image Processing</h1>
+      <h2>Project Info</h2>
+      <ul>
+        <li>David Calvo</li>
+        <li>dcalvo2</li>
+        <li>
+          MSVC @ C++20 / Visual Studio 2019 (Community Edition) / Windows 10
+        </li>
+        <li>0 Late Days used</li>
+      </ul>
+
+      <h2>Table of Contents</h2>
+      <ul>
+        <li><a href="#addRandomNoise">addRandomNoise</a> (Full)</li>
+        <li><a href="#brighten">brighten</a> (Full)</li>
+        <li><a href="#luminance">luminance</a> (Full)</li>
+        <li><a href="#contrast">contrast</a> (Full)</li>
+        <li><a href="#saturate">saturate</a> (Full)</li>
+        <li><a href="#crop">crop</a> (Full)</li>
+        <li><a href="#quantize">quantize</a> (Full)</li>
+        <li><a href="#randomDither">randomDither</a> (Full)</li>
+        <li><a href="#orderedDither2x2">orderedDither2x2</a> (Full)</li>
+        <li><a href="#floydSteinbergDither">floydSteinbergDither</a> (Full)</li>
+        <li><a href="#blur3x3">blur3x3</a> (Full)</li>
+        <li><a href="#edgeDetect3x3">edgeDetect3x3</a> (Full)</li>
+        <li><a href="#nearestSample">nearestSample</a> (Full)</li>
+        <li><a href="#bilinearSample">bilinearSample</a> (Full)</li>
+        <li><a href="#gaussianSample">gaussianSample</a> (Full)</li>
+        <li><a href="#scaleNearest">scaleNearest</a> (Full)</li>
+        <li><a href="#scaleBilinear">scaleBilinear</a> (Full)</li>
+        <li><a href="#scaleGaussian">scaleGaussian</a> (Full)</li>
+        <li><a href="#rotateNearest">rotateNearest</a> (Partial)</li>
+        <li><a href="#rotateBilinear">rotateBilinear</a> (Partial)</li>
+        <li><a href="#rotateGaussian">rotateGaussian</a> (Partial)</li>
+        <li><a href="#setAlpha">setAlpha</a> (Full)</li>
+        <li><a href="#composite">composite</a> (Full)</li>
+        <li><a href="#fun">fun</a> (Full)</li>
+        <li><a href="#BeierNeelyMorph">BeierNeelyMorph</a> (Full)</li>
+        <li><a href="#famous">Myself with a very famous person</a></li>
+        <li><a href="#Art">Art Contest Submission</a></li>
+        <li><a href="#Gif">Gif of my Beier-Neely Morphing filter</a></li>
+      </ul>
+
+      <h2>Implementation Details</h2>
+      <h3 id="addRandomNoise">addRandomNoise</h3>
+      <code>--noisify 0.3</code>
+      <br />
+      <img src="images/noise.bmp" alt="Noisy Shrek." />
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="brighten">brighten</h3>
+      <code>--brighten 2</code>
+      <br />
+      <img src="images/brighten.bmp" alt="Very Bright Shrek." />
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="luminance">luminance</h3>
+      <code>--gray</code>
+      <br />
+      <img src="images/gray.bmp" alt="Retro Shrek." />
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="contrast">contrast</h3>
+      <code>--contrast 2</code>
+      <br />
+      <img src="images/contrast.bmp" alt="Polarized Shrek." />
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="saturate">saturate</h3>
+      <code>--saturate 2</code>
+      <br />
+      <img src="images/saturate.bmp" alt="Vivid Shrek." />
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="crop">crop</h3>
+      <code>--crop 380 290 550 400</code>
+      <br />
+      <img src="images/cropped.bmp" alt="Oniony Shrek." />
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="quantize">quantize</h3>
+      <code>--quantize 3</code>
+      <br />
+      <img src="images/quantized.bmp" alt="Quantum Shrek." />
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="randomDither">randomDither</h3>
+      <code>--rDither 3</code>
+      <br />
+      <img src="images/rDither.bmp" alt="That's So Random Shrek." />
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="orderedDither2x2">orderedDither2x2</h3>
+      <code>--oDither2x2 3</code>
+      <br />
+      <img src="images/oDither2x2.bmp" alt="Square Shrek." />
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="floydSteinbergDither">floydSteinbergDither</h3>
+      <code>--fsDither 3</code>
+      <br />
+      <img src="images/fsDither.bmp" alt="Surprisingly High Fidelity Shrek." />
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="blur3x3">blur3x3</h3>
+      <code>--blur3x3</code>
+      <br />
+      <img src="images/blur3x3.bmp" alt="Slightly Myopic Shrek." />
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="edgeDetect3x3">edgeDetect3x3</h3>
+      <code>--edges3x3</code>
+      <br />
+      <img src="images/edges3x3.bmp" alt="The Upside Down Shrek." />
+      <p>
+        Fully implemented. Edges are initially pretty faint so the image is
+        brightened to an extreme extent. It results in clean lines, but some
+        color bleed. Also a little bit of noise.
+      </p>
+
+      <h3 id="nearestSample">nearestSample</h3>
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="bilinearSample">bilinearSample</h3>
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="gaussianSample">gaussianSample</h3>
+      <p>
+        Fully implemented. I'm not 100% sure that my filtering algorithm is
+        correct. It seems to blur images during resampling, but I'm not sure if
+        that's inherent to the Gaussian resampling process, as it's quite
+        similar to Gaussian blurring.
+      </p>
+
+      <h3 id="scaleNearest">scaleNearest</h3>
+      <code>--scaleNearest 0.5</code>
+      <br />
+      <img src="images/scaledNearest.bmp" alt="Tiny Shrek." />
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="scaleBilinear">scaleBilinear</h3>
+      <code>--scaleBilinear 0.5</code>
+      <br />
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="scaleGaussian">scaleGaussian</h3>
+      <code>--scaleGaussian 0.5</code>
+      <br />
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="rotateNearest">rotateNearest</h3>
+      <code>--rotateNearest 30</code>
+      <br />
+      <img src="images/rotatedNearest.bmp" alt="Right Round Shrek." />
+      <p>
+        Partially implemented. While rotations work fine, the image is cropped.
+        I couldn't figure out how to both resize the image to fit the rotated
+        version <i>and</i> keep it centered in the new image.
+      </p>
+
+      <h3 id="rotateBilinear">rotateBilinear</h3>
+      <code>--scaleBilinear 30</code>
+      <br />
+      <p>Partially implemented. See above.</p>
+
+      <h3 id="rotateGaussian">rotateGaussian</h3>
+      <code>--rotateGaussian 30</code>
+      <br />
+      <p>Partially implemented. See above.</p>
+
+      <h3 id="setAlpha">setAlpha</h3>
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="composite">composite</h3>
+      <code>--composite overlay.bmp matte.bmp</code>
+      <br />
+      <img src="images/overlay.bmp" alt="My face." />
+      <img src="images/matte.bmp" alt="Very rudimentary matte." />
+      <p>
+        Fully implemented. Yes, it's a lazy composite but I was working with
+        Paint.
+      </p>
+
+      <h3 id="fun">fun</h3>
+      <code>--fun</code>
+      <br />
+      <img src="images/fun.bmp" alt="Macrodose Shrek." />
+      <p>
+        Fully implemented. It's basically a 3-armed swirl effect that varies the
+        strength based on image size, scales color values according to their
+        position in the swirl, and finally Floyd-Steinberg Dithers them at 1 bit
+        for texture.
+      </p>
+
+      <h3 id="famous">Myself with a very famous person</h3>
+      <img src="images/composite.bmp" alt="Shrek Calvo." />
+      <p>
+        Donkey is voiced by Eddie Murphy and is thus a famous (donkey) person.
+      </p>
+
+      <h3 id="BeierNeelyMorph">BeierNeelyMorph</h3>
+      <code>--bnMorph rock.jpg cat_rock.txt 0.5</code>
+      <br />
+      <img src="morph/frames/11.jpg" alt="Animorphs anyone?" width="500px" />
+      <img src="morph/F in the chat.gif" alt="Fs in the chat." />
+      <p>
+        Fully implemented. All children functions are also fully implemented.
+      </p>
+
+      <h3 id="Art">Art Contest Submission</h3>
+      <code>--fun</code>
+      <br />
+      <img src="images/art.bmp" alt="Black Hole Sun." width="500px" />
+      <br />
+      <caption>
+        The above image is my submission. It was generated by passing the image
+        below into my fun filter.
+      </caption>
+      <br />
+      <img src="images/m87.jpg" alt="M87*." width="500px" />
+
+      <h3 id="Gif">Gif of my Beier-Neely Morphing filter</h3>
+      <img
+        src="morph/i_am_become_death.gif"
+        alt="no this wasn't done at 3am why do you ask"
+        width="500px"
+      />
+      <p>
+        All of the images, lines, and commands used to create this gif are in
+        the
+        <code>morph/</code> folder. In order to make the gif itself, I just used
+        an online tool.
+      </p>
+    </div>
+  </body>
+</html>
