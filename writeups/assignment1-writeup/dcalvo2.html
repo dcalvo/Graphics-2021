@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="dcalvo2_HTML/style.css" />
     <title>Assignment 1: Image Processing Writeup</title>
   </head>
   <body>
@@ -56,73 +56,76 @@
       <h3 id="addRandomNoise">addRandomNoise</h3>
       <code>--noisify 0.3</code>
       <br />
-      <img src="images/noise.bmp" alt="Noisy Shrek." />
+      <img src="dcalvo2_HTML/noise.bmp" alt="Noisy Shrek." />
       <p>No notes. Fully implemented.</p>
 
       <h3 id="brighten">brighten</h3>
       <code>--brighten 2</code>
       <br />
-      <img src="images/brighten.bmp" alt="Very Bright Shrek." />
+      <img src="dcalvo2_HTML/brighten.bmp" alt="Very Bright Shrek." />
       <p>No notes. Fully implemented.</p>
 
       <h3 id="luminance">luminance</h3>
       <code>--gray</code>
       <br />
-      <img src="images/gray.bmp" alt="Retro Shrek." />
+      <img src="dcalvo2_HTML/gray.bmp" alt="Retro Shrek." />
       <p>No notes. Fully implemented.</p>
 
       <h3 id="contrast">contrast</h3>
       <code>--contrast 2</code>
       <br />
-      <img src="images/contrast.bmp" alt="Polarized Shrek." />
+      <img src="dcalvo2_HTML/contrast.bmp" alt="Polarized Shrek." />
       <p>No notes. Fully implemented.</p>
 
       <h3 id="saturate">saturate</h3>
       <code>--saturate 2</code>
       <br />
-      <img src="images/saturate.bmp" alt="Vivid Shrek." />
+      <img src="dcalvo2_HTML/saturate.bmp" alt="Vivid Shrek." />
       <p>No notes. Fully implemented.</p>
 
       <h3 id="crop">crop</h3>
       <code>--crop 380 290 550 400</code>
       <br />
-      <img src="images/cropped.bmp" alt="Oniony Shrek." />
+      <img src="dcalvo2_HTML/cropped.bmp" alt="Oniony Shrek." />
       <p>No notes. Fully implemented.</p>
 
       <h3 id="quantize">quantize</h3>
       <code>--quantize 3</code>
       <br />
-      <img src="images/quantized.bmp" alt="Quantum Shrek." />
+      <img src="dcalvo2_HTML/quantized.bmp" alt="Quantum Shrek." />
       <p>No notes. Fully implemented.</p>
 
       <h3 id="randomDither">randomDither</h3>
       <code>--rDither 3</code>
       <br />
-      <img src="images/rDither.bmp" alt="That's So Random Shrek." />
+      <img src="dcalvo2_HTML/rDither.bmp" alt="That's So Random Shrek." />
       <p>No notes. Fully implemented.</p>
 
       <h3 id="orderedDither2x2">orderedDither2x2</h3>
       <code>--oDither2x2 3</code>
       <br />
-      <img src="images/oDither2x2.bmp" alt="Square Shrek." />
+      <img src="dcalvo2_HTML/oDither2x2.bmp" alt="Square Shrek." />
       <p>No notes. Fully implemented.</p>
 
       <h3 id="floydSteinbergDither">floydSteinbergDither</h3>
       <code>--fsDither 3</code>
       <br />
-      <img src="images/fsDither.bmp" alt="Surprisingly High Fidelity Shrek." />
+      <img
+        src="dcalvo2_HTML/fsDither.bmp"
+        alt="Surprisingly High Fidelity Shrek."
+      />
       <p>No notes. Fully implemented.</p>
 
       <h3 id="blur3x3">blur3x3</h3>
       <code>--blur3x3</code>
       <br />
-      <img src="images/blur3x3.bmp" alt="Slightly Myopic Shrek." />
+      <img src="dcalvo2_HTML/blur3x3.bmp" alt="Slightly Myopic Shrek." />
       <p>No notes. Fully implemented.</p>
 
       <h3 id="edgeDetect3x3">edgeDetect3x3</h3>
       <code>--edges3x3</code>
       <br />
-      <img src="images/edges3x3.bmp" alt="The Upside Down Shrek." />
+      <img src="dcalvo2_HTML/edges3x3.bmp" alt="The Upside Down Shrek." />
       <p>
         Fully implemented. Edges are initially pretty faint so the image is
         brightened to an extreme extent. It results in clean lines, but some
@@ -146,7 +149,7 @@
       <h3 id="scaleNearest">scaleNearest</h3>
       <code>--scaleNearest 0.5</code>
       <br />
-      <img src="images/scaledNearest.bmp" alt="Tiny Shrek." />
+      <img src="dcalvo2_HTML/scaledNearest.bmp" alt="Tiny Shrek." />
       <p>No notes. Fully implemented.</p>
 
       <h3 id="scaleBilinear">scaleBilinear</h3>
@@ -162,7 +165,7 @@
       <h3 id="rotateNearest">rotateNearest</h3>
       <code>--rotateNearest 30</code>
       <br />
-      <img src="images/rotatedNearest.bmp" alt="Right Round Shrek." />
+      <img src="dcalvo2_HTML/rotatedNearest.bmp" alt="Right Round Shrek." />
       <p>
         Partially implemented. While rotations work fine, the image is cropped.
         I couldn't figure out how to both resize the image to fit the rotated
@@ -185,8 +188,8 @@
       <h3 id="composite">composite</h3>
       <code>--composite overlay.bmp matte.bmp</code>
       <br />
-      <img src="images/overlay.bmp" alt="My face." />
-      <img src="images/matte.bmp" alt="Very rudimentary matte." />
+      <img src="dcalvo2_HTML/overlay.bmp" alt="My face." />
+      <img src="dcalvo2_HTML/matte.bmp" alt="Very rudimentary matte." />
       <p>
         Fully implemented. Yes, it's a lazy composite but I was working with
         Paint.
@@ -195,7 +198,7 @@
       <h3 id="fun">fun</h3>
       <code>--fun</code>
       <br />
-      <img src="images/fun.bmp" alt="Macrodose Shrek." />
+      <img src="dcalvo2_HTML/fun.bmp" alt="Macrodose Shrek." />
       <p>
         Fully implemented. It's basically a 3-armed swirl effect that varies the
         strength based on image size, scales color values according to their
@@ -204,7 +207,7 @@
       </p>
 
       <h3 id="famous">Myself with a very famous person</h3>
-      <img src="images/composite.bmp" alt="Shrek Calvo." />
+      <img src="dcalvo2_HTML/composite.bmp" alt="Shrek Calvo." />
       <p>
         Donkey is voiced by Eddie Murphy and is thus a famous (donkey) person.
       </p>
@@ -221,14 +224,18 @@
       <h3 id="Art">Art Contest Submission</h3>
       <code>--fun</code>
       <br />
-      <img src="images/art.bmp" alt="Black Hole Sun." width="500px" />
+      <img
+        src="dcalvo2_HTML/dcalvo2.art.submission1.bmp"
+        alt="Black Hole Sun."
+        width="500px"
+      />
       <br />
       <caption>
         The above image is my submission. It was generated by passing the image
         below into my fun filter.
       </caption>
       <br />
-      <img src="images/m87.jpg" alt="M87*." width="500px" />
+      <img src="dcalvo2_HTML/m87.jpg" alt="M87*." width="500px" />
 
       <h3 id="Gif">Gif of my Beier-Neely Morphing filter</h3>
       <img
