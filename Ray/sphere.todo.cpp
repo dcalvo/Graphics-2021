@@ -54,14 +54,13 @@ double Sphere::intersect(Ray3D ray, RayShapeIntersectionInfo& iInfo, BoundingBox
 	const Polynomial1D<2> p = P(ray);
 	double roots[2];
 	const unsigned int root_num = p.roots(roots);
-	if (root_num) {
-		if (root_num == 1)
-			return roots[0];
-		if (roots[0] < roots[1] && roots[0] > 0.)
-			return roots[0];
-		return roots[1];
-	}
-	return Infinity;
+	if (!root_num) return Infinity;
+	// get closest root
+	const double root = (root_num == 2 && roots[1] < roots[0] && roots[1] > 0.) ? roots[1] : roots[0];
+	iInfo.position = ray(root);
+	iInfo.normal = (iInfo.position - center).unit();
+	// TODO: set iInfo material and texture
+	return root;
 }
 
 bool Sphere::isInside(Point3D p) const {

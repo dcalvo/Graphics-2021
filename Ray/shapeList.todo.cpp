@@ -40,13 +40,14 @@ double ShapeList::intersect(Ray3D ray, RayShapeIntersectionInfo& iInfo, Bounding
 	//////////////////////////////////////////////////////////////////
 	// Compute the intersection of the shape list with the ray here //
 	//////////////////////////////////////////////////////////////////
-	for (const auto shape : this->shapes) {
+	double closest_d = Infinity;
+	for (const auto shape : shapes) {
 		RayShapeIntersectionInfo iInfoCopy(iInfo);
 		const double d = shape->intersect(ray, iInfoCopy, range, validityLambda);
 		if (isinf(d)) continue;
-		return d;
+		if (d < closest_d) closest_d = d;
 	}
-	return Infinity;
+	return closest_d;
 }
 
 bool ShapeList::isInside(Point3D p) const {
@@ -141,8 +142,12 @@ double TriangleList::intersect(Ray3D ray, RayShapeIntersectionInfo& iInfo, Bound
 	////////////////////////////////////////////////////////////////////////////
 	// Compute the intersection of the difference with the triangle list here //
 	////////////////////////////////////////////////////////////////////////////
-	WARN_ONCE("method undefined");
-	return Infinity;
+	double d = Infinity;
+	RayShapeIntersectionInfo iInfoCopy(iInfo);
+	d = _shapeList.intersect(ray, iInfoCopy, range, validityLambda);
+	if (isinf(d)) return Infinity;
+	// TODO: set material
+	return d;
 }
 
 void TriangleList::drawOpenGL(GLSLProgram* glslProgram) const {
@@ -171,6 +176,7 @@ void TriangleList::init(const LocalSceneData& data) {
 	///////////////////////////////////
 	// Do any additional set-up here //
 	///////////////////////////////////
+
 	WARN_ONCE("method undefined");
 }
 
