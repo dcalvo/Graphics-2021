@@ -10,58 +10,61 @@ using namespace Util;
 // DirectionalLight //
 //////////////////////
 
-Point3D DirectionalLight::getAmbient( Ray3D ray , const RayShapeIntersectionInfo& iInfo ) const
-{
+Point3D DirectionalLight::getAmbient(Ray3D ray, const RayShapeIntersectionInfo& iInfo) const {
 	////////////////////////////////////////////////////
 	// Get the ambient contribution of the light here //
 	////////////////////////////////////////////////////
-	THROW( "method undefined" );
-	return Point3D();
+	const Point3D intensity = _ambient;
+	return intensity;
 }
 
-Point3D DirectionalLight::getDiffuse( Ray3D ray , const RayShapeIntersectionInfo& iInfo ) const
-{
+Point3D DirectionalLight::getDiffuse(Ray3D ray, const RayShapeIntersectionInfo& iInfo) const {
 	////////////////////////////////////////////////////
 	// Get the diffuse contribution of the light here //
 	////////////////////////////////////////////////////
-	THROW( "method undefined" );
-	return Point3D();
+	const Point3D intensity = _diffuse;
+	const Point3D dirTowardsLight = -_direction;
+	const Point3D diffuse = iInfo.material->diffuse * iInfo.normal.dot(dirTowardsLight) * intensity;
+	return diffuse;
 }
 
-Point3D DirectionalLight::getSpecular( Ray3D ray , const RayShapeIntersectionInfo& iInfo ) const
-{
+Point3D DirectionalLight::getSpecular(Ray3D ray, const RayShapeIntersectionInfo& iInfo) const {
 	/////////////////////////////////////////////////////
 	// Get the specular contribution of the light here //
 	/////////////////////////////////////////////////////
-	THROW( "method undefined" );
-	return Point3D();
+	const Point3D intensity = _specular;
+	const Point3D dirTowardsLight = -_direction;
+	const Point3D r = (dirTowardsLight - 2 * (iInfo.normal.dot(dirTowardsLight) * iInfo.normal)).unit();
+	const double vr = std::clamp(ray.direction.dot(r), 0., 1.);
+	const Point3D specular = iInfo.material->specular * pow(vr, iInfo.material->specularFallOff) * intensity;
+	return specular;
 }
 
-bool DirectionalLight::isInShadow( const RayShapeIntersectionInfo& iInfo , const Shape* shape ) const
-{
+bool DirectionalLight::isInShadow(const RayShapeIntersectionInfo& iInfo, const Shape* shape) const {
 	//////////////////////////////////////////////
 	// Determine if the light is in shadow here //
 	//////////////////////////////////////////////
-	THROW( "method undefined" );
-	return false;
+	const Point3D dirTowardsLight = -_direction;
+	const Ray3D ray(iInfo.position + dirTowardsLight * Epsilon, dirTowardsLight);
+	RayShapeIntersectionInfo occlusionInfo;
+	return !isinf(shape->intersect(ray, occlusionInfo));
 }
 
-Point3D DirectionalLight::transparency( const RayShapeIntersectionInfo &iInfo , const Shape &shape , Point3D cLimit ) const
-{
+Point3D DirectionalLight::transparency(const RayShapeIntersectionInfo& iInfo, const Shape& shape,
+                                       Point3D cLimit) const {
 	//////////////////////////////////////////////////////////
 	// Compute the transparency along the path to the light //
 	//////////////////////////////////////////////////////////
-	THROW( "method undefined" );
-	return Point3D( 1. , 1. , 1. );
+	THROW("method undefined");
+	return Point3D(1., 1., 1.);
 }
 
-void DirectionalLight::drawOpenGL( int index , GLSLProgram * glslProgram ) const
-{
+void DirectionalLight::drawOpenGL(int index, GLSLProgram* glslProgram) const {
 	//////////////////////////////
 	// Do OpenGL rendering here //
 	//////////////////////////////
-	THROW( "method undefined" );
+	THROW("method undefined");
 
 	// Sanity check to make sure that OpenGL state is good
-	ASSERT_OPEN_GL_STATE();	
+	ASSERT_OPEN_GL_STATE();
 }
