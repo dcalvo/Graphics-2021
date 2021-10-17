@@ -361,8 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-Assignment4.exe
-Assignment2.exe
-Assignment1.exe
-Assignment3.exe
-Image.lib
+/static3d
+/input
+*.exe
+*.lib
