@@ -44,8 +44,11 @@ double ShapeList::intersect(Ray3D ray, RayShapeIntersectionInfo& iInfo, Bounding
 	for (const auto shape : shapes) {
 		RayShapeIntersectionInfo iInfoCopy(iInfo);
 		const double d = shape->intersect(ray, iInfoCopy, range, validityLambda);
-		if (isinf(d)) continue;
-		if (d < closest_d) closest_d = d;
+		if (isinf(d) || d < 0) continue;
+		if (d < closest_d) {
+			closest_d = d;
+			iInfo = iInfoCopy;
+		}
 	}
 	return closest_d;
 }
@@ -143,10 +146,9 @@ double TriangleList::intersect(Ray3D ray, RayShapeIntersectionInfo& iInfo, Bound
 	// Compute the intersection of the difference with the triangle list here //
 	////////////////////////////////////////////////////////////////////////////
 	double d = Infinity;
-	RayShapeIntersectionInfo iInfoCopy(iInfo);
-	d = _shapeList.intersect(ray, iInfoCopy, range, validityLambda);
+	d = _shapeList.intersect(ray, iInfo, range, validityLambda);
 	if (isinf(d)) return Infinity;
-	// TODO: set material
+	iInfo.material = _material;
 	return d;
 }
 

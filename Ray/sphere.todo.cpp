@@ -18,10 +18,11 @@ void Sphere::init(const LocalSceneData& data) {
 		THROW("material index out of bounds: %d <= %d", _materialIndex, static_cast<int>(data.materials.size()));
 	else _material = &data.materials[_materialIndex];
 
-	///////////////////////////////////
-	// Do any additional set-up here //
-	///////////////////////////////////
-	WARN_ONCE("method undefined");
+	// Calculate intersection polynomial
+	Polynomial3D<2> P;
+	P.coefficient(2u, 0u, 0u) = P.coefficient(0u, 2u, 0u) = P.coefficient(0u, 0u, 2u) = 1;
+	P.coefficient(0u, 0u, 0u) = -(radius * radius);
+	_P = P;
 }
 
 void Sphere::updateBoundingBox(void) {
@@ -48,10 +49,7 @@ double Sphere::intersect(Ray3D ray, RayShapeIntersectionInfo& iInfo, BoundingBox
 	/////////////////////////////////////////////////////////
 	// Compute the intersection of the sphere with the ray //
 	/////////////////////////////////////////////////////////
-	Polynomial3D<2> P;
-	P.coefficient(2u, 0u, 0u) = P.coefficient(0u, 2u, 0u) = P.coefficient(0u, 0u, 2u) = 1;
-	P.coefficient(0u, 0u, 0u) = -(this->radius * this->radius);
-	const Polynomial1D<2> p = P(ray);
+	const Polynomial1D<2> p = _P(ray);
 	double roots[2];
 	const unsigned int root_num = p.roots(roots);
 	if (!root_num) return Infinity;
@@ -59,7 +57,8 @@ double Sphere::intersect(Ray3D ray, RayShapeIntersectionInfo& iInfo, BoundingBox
 	const double root = (root_num == 2 && roots[1] < roots[0] && roots[1] > 0.) ? roots[1] : roots[0];
 	iInfo.position = ray(root);
 	iInfo.normal = (iInfo.position - center).unit();
-	// TODO: set iInfo material and texture
+	iInfo.material = _material;
+	// TODO: set iInfo texture
 	return root;
 }
 

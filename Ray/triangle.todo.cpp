@@ -67,7 +67,6 @@ double Triangle::intersect(Ray3D ray, RayShapeIntersectionInfo& iInfo, BoundingB
 	if (alpha < 0 || beta < 0 || gamma < 0) return Infinity;
 	iInfo.position = p;
 	iInfo.normal = (alpha * _v[0]->normal + beta * _v[1]->normal + gamma * _v[2]->normal).unit();
-	std::cout << iInfo.position << '\n';
 	// TODO: texture?
 	return t;
 }

@@ -39,10 +39,10 @@ namespace Ray {
 		Util::Plane3D _plane;
 
 		/** The information we can precompute for determining barycentric coordinates */
-		double _d00;
-		double _d01;
-		double _d11;
-		double _denom;
+		double _d00; // v0 dot v0
+		double _d01; // v0 dot v1
+		double _d11; // v1 dot v1
+		double _denom; // _d00 * _d11 - _d01 * _d01
 
 	public:
 		/** This static method returns the directive describing the shape. */
