@@ -28,7 +28,7 @@ Point3D Scene::getColor(Ray3D ray, int rDepth, Point3D cLimit) {
 	////////////////////////////////////////////////
 	// Get the color associated with the ray here //
 	////////////////////////////////////////////////
-	return this->intersect(ray, RayShapeIntersectionInfo()) == Infinity ? Point3D(0, 0, 0) : Point3D(1, 1, 1);
+	return isinf(this->intersect(ray, RayShapeIntersectionInfo())) ? Point3D(0, 0, 0) : Point3D(1, 1, 1);
 }
 
 //////////////

@@ -45,16 +45,22 @@ double Sphere::intersect(Ray3D ray, RayShapeIntersectionInfo& iInfo, BoundingBox
                          std::function<bool (double)> validityLambda) const {
 	RayTracingStats::IncrementRayPrimitiveIntersectionNum();
 
-	//////////////////////////////////////////////////////////////
-	// Compute the intersection of the sphere with the ray here //
-	//////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////
+	// Compute the intersection of the sphere with the ray //
+	/////////////////////////////////////////////////////////
 	Polynomial3D<2> P;
 	P.coefficient(2u, 0u, 0u) = P.coefficient(0u, 2u, 0u) = P.coefficient(0u, 0u, 2u) = 1;
 	P.coefficient(0u, 0u, 0u) = -(this->radius * this->radius);
-	Polynomial1D<2> p = P(ray);
+	const Polynomial1D<2> p = P(ray);
 	double roots[2];
-	unsigned int rootNum = p.roots(roots);
-	if (rootNum) return rootNum == 1 ? roots[0] : roots[0] < roots[1] ? roots[0] : roots[1];
+	const unsigned int root_num = p.roots(roots);
+	if (root_num) {
+		if (root_num == 1)
+			return roots[0];
+		if (roots[0] < roots[1] && roots[0] > 0.)
+			return roots[0];
+		return roots[1];
+	}
 	return Infinity;
 }
 

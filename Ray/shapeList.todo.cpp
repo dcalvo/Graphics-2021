@@ -40,10 +40,10 @@ double ShapeList::intersect(Ray3D ray, RayShapeIntersectionInfo& iInfo, Bounding
 	//////////////////////////////////////////////////////////////////
 	// Compute the intersection of the shape list with the ray here //
 	//////////////////////////////////////////////////////////////////
-	for (auto shape : this->shapes) {
+	for (const auto shape : this->shapes) {
 		RayShapeIntersectionInfo iInfoCopy(iInfo);
-		double d = shape->intersect(ray, iInfoCopy, range, validityLambda);
-		if (d == Infinity) continue;
+		const double d = shape->intersect(ray, iInfoCopy, range, validityLambda);
+		if (isinf(d)) continue;
 		return d;
 	}
 	return Infinity;

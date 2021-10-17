@@ -11,25 +11,19 @@ using namespace Util;
 ////////////
 
 Ray3D Camera::getRay(int i, int j, int width, int height) const {
+	//////////////////////////////////////////////
+	// Generate a ray from the camera's position //
+	//////////////////////////////////////////////
 	const double ar = height / width;
 	const double vfov = heightAngle;
 	const double hfov = 2 * atan(tan(vfov / 2) / ar);
-	const Point3D W = -forward;
-	const Point3D U = Point3D::CrossProduct(W, up);
-	const Point3D V = Point3D::CrossProduct(W, U);
-	const double d = 1000;
-	const double l = -tan(hfov / 2) * width;
-	const double r = tan(hfov / 2) * width;
-	const double b = -tan(vfov / 2) * height;
-	const double t = tan(vfov / 2) * height;
-	const double u = l + (r - l) * (i + 0.5) / width;
-	const double v = b + (t - b) * (j + 0.5) / height;
-	const Point3D direction(-d * W + u * U + v * V);
+	const Point3D tr = position + forward - up * tan(vfov / 2) - right * tan(hfov / 2);
+	const Point3D tl = position + forward - up * tan(vfov / 2) + right * tan(hfov / 2);
+	const Point3D bl = position + forward + up * tan(vfov / 2) + right * tan(hfov / 2);
+	const Point3D u = tl + (tr - tl) * (i + 0.5) / width;
+	const Point3D v = tl + (bl - tl) * (j + 0.5) / height;
 	const Point3D origin(position);
-	// debug
-	if ((i == 0 && j == 0) || (i == 0 && j == 499) || (i == 499 && j == 0) || (i == 499 && j == 499) || i == 249 && j ==
-		249)
-		std::cout << Ray3D(origin, direction) << '\n';
+	const Point3D direction = (Point3D(u[0], v[1], v[2]) - position).unit();
 	return Ray3D(origin, direction);
 }
 
