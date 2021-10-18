@@ -42,12 +42,12 @@ double ShapeList::intersect(Ray3D ray, RayShapeIntersectionInfo& iInfo, Bounding
 	//////////////////////////////////////////////////////////////////
 	double closest_d = Infinity;
 	for (const auto shape : shapes) {
-		RayShapeIntersectionInfo iInfoCopy(iInfo);
-		const double d = shape->intersect(ray, iInfoCopy, range, validityLambda);
+		RayShapeIntersectionInfo thisInfo;
+		const double d = shape->intersect(ray, thisInfo, range, validityLambda);
 		if (isinf(d) || d < 0 || !range.isInside(d)) continue;
 		if (d < closest_d) {
 			closest_d = d;
-			iInfo = iInfoCopy;
+			iInfo = thisInfo;
 		}
 	}
 	return closest_d;
@@ -106,8 +106,23 @@ double AffineShape::intersect(Ray3D ray, RayShapeIntersectionInfo& iInfo, Boundi
 	//////////////////////////////////////////////////////////////////////////////////////
 	// Compute the intersection of the difference with the affinely deformed shape here //
 	//////////////////////////////////////////////////////////////////////////////////////
-	WARN_ONCE("method undefined");
-	return _shape->intersect(ray, iInfo, range, validityLambda);
+	const Matrix4D localToGlobal = getMatrix();
+	const Matrix3D localToGlobalNormal = getNormalMatrix();
+	const Matrix4D globalToLocal = getInverseMatrix();
+	const Matrix3D globalToLocalLinear(globalToLocal);
+	// transform ray G2L
+	const Point4D local_pos = globalToLocal * Point4D(ray.position[0], ray.position[1], ray.position[2], 1);
+	Ray3D local_ray;
+	local_ray.position = Point3D(local_pos[0], local_pos[1], local_pos[2]) / local_pos[3];
+	local_ray.direction = globalToLocalLinear * ray.direction; // TODO: revisit why this doesn't need to be normalized?
+	// intersect in L space
+	const double d = _shape->intersect(local_ray, iInfo, range, validityLambda);
+	if (isinf(d) || d < 0 || !range.isInside(d)) return Infinity;
+	// transform hit info L2G
+	const Point4D global_pos = localToGlobal * Point4D(iInfo.position[0], iInfo.position[1], iInfo.position[2], 1);
+	iInfo.position = Point3D(global_pos[0], global_pos[1], global_pos[2]) / global_pos[3];
+	iInfo.normal = localToGlobalNormal * iInfo.normal;
+	return d;
 }
 
 bool AffineShape::isInside(Point3D p) const {
