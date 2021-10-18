@@ -14,7 +14,7 @@ Ray3D Camera::getRay(int i, int j, int width, int height) const {
 	//////////////////////////////////////////////
 	// Generate a ray from the camera's position //
 	//////////////////////////////////////////////
-	const double ar = height / width;
+	const double ar = static_cast<double>(height) / width;
 	const double vfov = heightAngle;
 	const double hfov = 2 * atan(tan(vfov / 2) / ar);
 	const Point3D tl = position + forward + up * tan(vfov / 2) - right * tan(hfov / 2);
