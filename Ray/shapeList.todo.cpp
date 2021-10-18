@@ -119,7 +119,7 @@ double AffineShape::intersect(Ray3D ray, RayShapeIntersectionInfo& iInfo, Boundi
 	if (isinf(local_d)) return Infinity;
 	// transform hit info L2G
 	iInfo.position = localToGlobal * iInfo.position;
-	iInfo.normal = localToGlobalNormal * iInfo.normal;
+	iInfo.normal = (localToGlobalNormal * iInfo.normal).unit();
 	const double d = (iInfo.position - ray.position).length() / ray.direction.length();
 	return d;
 }
