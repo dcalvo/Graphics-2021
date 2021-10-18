@@ -113,13 +113,14 @@ double AffineShape::intersect(Ray3D ray, RayShapeIntersectionInfo& iInfo, Boundi
 	// transform ray G2L
 	Ray3D local_ray;
 	local_ray.position = globalToLocal * ray.position;
-	local_ray.direction = globalToLocalLinear * ray.direction; // TODO: revisit why this doesn't need to be normalized?
+	local_ray.direction = (globalToLocalLinear * ray.direction).unit();
 	// intersect in L space
-	const double d = _shape->intersect(local_ray, iInfo, range, validityLambda);
-	if (isinf(d)) return Infinity;
+	const double local_d = _shape->intersect(local_ray, iInfo, range, validityLambda);
+	if (isinf(local_d)) return Infinity;
 	// transform hit info L2G
 	iInfo.position = localToGlobal * iInfo.position;
 	iInfo.normal = localToGlobalNormal * iInfo.normal;
+	const double d = (iInfo.position - ray.position).length() / ray.direction.length();
 	return d;
 }
 
