@@ -44,7 +44,7 @@ Point3D SpotLight::getIntensity(Point3D light, const RayShapeIntersectionInfo& i
 	const Point3D numer = light * pow(dv, _dropOffRate);
 	const double delta = (_location - iInfo.position).length();
 	const double denom = _constAtten + _linearAtten * delta + _quadAtten * (delta * delta);
-	return dv > cos(_cutOffAngle) ? numer / denom : Point3D(0., 0., 0.);
+	return dv > cos(_cutOffAngle * 2) ? numer / denom : Point3D(0., 0., 0.);
 }
 
 bool SpotLight::isInShadow(const RayShapeIntersectionInfo& iInfo, const Shape* shape) const {
