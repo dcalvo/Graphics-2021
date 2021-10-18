@@ -17,11 +17,11 @@ Ray3D Camera::getRay(int i, int j, int width, int height) const {
 	const double ar = height / width;
 	const double vfov = heightAngle;
 	const double hfov = 2 * atan(tan(vfov / 2) / ar);
-	const Point3D tr = position + forward - up * tan(vfov / 2) - right * tan(hfov / 2);
-	const Point3D tl = position + forward - up * tan(vfov / 2) + right * tan(hfov / 2);
-	const Point3D bl = position + forward + up * tan(vfov / 2) + right * tan(hfov / 2);
+	const Point3D tl = position + forward + up * tan(vfov / 2) - right * tan(hfov / 2);
+	const Point3D tr = position + forward + up * tan(vfov / 2) + right * tan(hfov / 2);
+	const Point3D bl = position + forward - up * tan(vfov / 2) - right * tan(hfov / 2);
 	const Point3D u = tl + (tr - tl) * (i + 0.5) / width;
-	const Point3D v = tl + (bl - tl) * (j + 0.5) / height;
+	const Point3D v = bl + (tl - bl) * (j + 0.5) / height;
 	const Point3D origin(position);
 	const Point3D direction = (Point3D(u[0], v[1], v[2]) - position).unit();
 	return Ray3D(origin, direction);
