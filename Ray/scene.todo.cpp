@@ -30,7 +30,7 @@ Point3D Scene::getColor(Ray3D ray, int rDepth, Point3D cLimit) {
 	////////////////////////////////////////////////
 	RayShapeIntersectionInfo iInfo;
 	const double d = this->intersect(ray, iInfo);
-	if (isinf(d)) return Point3D(0, 0, 0);
+	if (isinf(d)) return Point3D(0., 0., 0.);
 	// compute color
 	const auto lights = _globalData.lights;
 	const Point3D I_e = iInfo.material->emissive;
@@ -44,7 +44,7 @@ Point3D Scene::getColor(Ray3D ray, int rDepth, Point3D cLimit) {
 		const Point3D ambient = K_a * I_la;
 		const Point3D diffuse = light->getDiffuse(ray, iInfo);
 		const Point3D specular = light->getSpecular(ray, iInfo);
-		const Point3D shadow = light->isInShadow(iInfo, this) ? Point3D(0, 0, 0) : Point3D(1, 1, 1);
+		const Point3D shadow = light->isInShadow(iInfo, this) ? Point3D(0., 0., 0.) : Point3D(1., 1., 1.);
 		summed_lights = summed_lights + ambient + (diffuse + specular) * shadow;
 	}
 	Point3D I = I_e + summed_lights;
