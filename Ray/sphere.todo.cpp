@@ -55,6 +55,7 @@ double Sphere::intersect(Ray3D ray, RayShapeIntersectionInfo& iInfo, BoundingBox
 	if (!root_num) return Infinity;
 	// get closest root
 	const double root = (root_num == 2 && roots[1] < roots[0] && roots[1] > 0.) ? roots[1] : roots[0];
+	if (!range.isInside(root)) return Infinity;
 	iInfo.position = ray(root);
 	iInfo.normal = (iInfo.position - center).unit();
 	iInfo.material = _material;

@@ -62,6 +62,7 @@ double Triangle::intersect(Ray3D ray, RayShapeIntersectionInfo& iInfo, BoundingB
 	/////////////////////////////////////////////////////////////
 	if (abs(ray.direction.dot(_plane.normal)) < Epsilon) return Infinity;
 	const double t = -(ray.position - _v[0]->position).dot(_plane.normal) / ray.direction.dot(_plane.normal);
+	if (!range.isInside(t)) return Infinity;
 	const Point3D p = ray(t); // point of intersection with the plane
 	const auto [alpha, beta, gamma] = barycentricCoordinates(p);
 	if (alpha < 0 || beta < 0 || gamma < 0) return Infinity;

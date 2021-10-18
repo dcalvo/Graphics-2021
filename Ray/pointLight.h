@@ -32,7 +32,7 @@ namespace Ray {
 		Util::Point3D getAmbient(Util::Ray3D ray, const class RayShapeIntersectionInfo& iInfo) const override;
 		Util::Point3D getDiffuse(Util::Ray3D ray, const class RayShapeIntersectionInfo& iInfo) const override;
 		Util::Point3D getSpecular(Util::Ray3D ray, const class RayShapeIntersectionInfo& iInfo) const override;
-		Util::Point3D getIntensity(Util::Point3D light, Util::Point3D intersection) const;
+		Util::Point3D getIntensity(Util::Point3D light, const RayShapeIntersectionInfo& iInfo) const;
 		bool isInShadow(const class RayShapeIntersectionInfo& iInfo, const class Shape* shape) const override;
 		Util::Point3D transparency(const class RayShapeIntersectionInfo& iInfo, const class Shape& shape,
 		                           Util::Point3D cLimit) const override;

@@ -2,6 +2,7 @@
 #include <Util/exceptions.h>
 #include "pointLight.h"
 #include "scene.h"
+#include "Image/bmp.h"
 
 using namespace Ray;
 using namespace Util;
@@ -14,14 +15,14 @@ Point3D PointLight::getAmbient(Ray3D ray, const RayShapeIntersectionInfo& iInfo)
 	////////////////////////////////////////////////////
 	// Get the ambient contribution of the light here //
 	////////////////////////////////////////////////////
-	return getIntensity(_ambient, iInfo.position);
+	return getIntensity(_ambient, iInfo);
 }
 
 Point3D PointLight::getDiffuse(Ray3D ray, const RayShapeIntersectionInfo& iInfo) const {
 	////////////////////////////////////////////////////
 	// Get the diffuse contribution of the light here //
 	////////////////////////////////////////////////////
-	const Point3D intensity = getIntensity(_diffuse, iInfo.position);
+	const Point3D intensity = getIntensity(_diffuse, iInfo);
 	const Point3D dirTowardsLight = (_location - iInfo.position).unit();
 	const Point3D diffuse = iInfo.material->diffuse * iInfo.normal.dot(dirTowardsLight) * intensity;
 	return diffuse;
@@ -31,7 +32,7 @@ Point3D PointLight::getSpecular(Ray3D ray, const RayShapeIntersectionInfo& iInfo
 	/////////////////////////////////////////////////////
 	// Get the specular contribution of the light here //
 	/////////////////////////////////////////////////////
-	const Point3D intensity = getIntensity(_specular, iInfo.position);
+	const Point3D intensity = getIntensity(_specular, iInfo);
 	const Point3D dirTowardsLight = (_location - iInfo.position).unit();
 	const Point3D r = (dirTowardsLight - 2 * (iInfo.normal.dot(dirTowardsLight) * iInfo.normal)).unit();
 	const double vr = std::clamp(ray.direction.dot(r), 0., 1.);
@@ -39,8 +40,8 @@ Point3D PointLight::getSpecular(Ray3D ray, const RayShapeIntersectionInfo& iInfo
 	return specular;
 }
 
-Point3D PointLight::getIntensity(Point3D light, Point3D intersection) const {
-	const double delta = (_location - intersection).length();
+Point3D PointLight::getIntensity(Point3D light, const RayShapeIntersectionInfo& iInfo) const {
+	const double delta = (_location - iInfo.position).length();
 	const double denom = _constAtten + _linearAtten * delta + _quadAtten * (delta * delta);
 	return light / denom;
 }
@@ -52,7 +53,8 @@ bool PointLight::isInShadow(const RayShapeIntersectionInfo& iInfo, const Shape* 
 	const Point3D dirTowardsLight = (_location - iInfo.position).unit();
 	const Ray3D ray(iInfo.position + dirTowardsLight * Epsilon, dirTowardsLight);
 	RayShapeIntersectionInfo occlusionInfo;
-	return !isinf(shape->intersect(ray, occlusionInfo));
+	const BoundingBox1D range(Point1D(Epsilon), Point1D((_location - iInfo.position).length()));
+	return !isinf(shape->intersect(ray, occlusionInfo, range));
 }
 
 Point3D PointLight::transparency(const RayShapeIntersectionInfo& iInfo, const Shape& shape, Point3D cLimit) const {

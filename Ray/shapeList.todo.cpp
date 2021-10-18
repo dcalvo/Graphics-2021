@@ -44,7 +44,7 @@ double ShapeList::intersect(Ray3D ray, RayShapeIntersectionInfo& iInfo, Bounding
 	for (const auto shape : shapes) {
 		RayShapeIntersectionInfo iInfoCopy(iInfo);
 		const double d = shape->intersect(ray, iInfoCopy, range, validityLambda);
-		if (isinf(d) || d < 0) continue;
+		if (isinf(d) || d < 0 || !range.isInside(d)) continue;
 		if (d < closest_d) {
 			closest_d = d;
 			iInfo = iInfoCopy;
