@@ -19,11 +19,14 @@ bool Scene::Refract(Point3D v, Point3D n, double ir, Point3D& refract) {
 	//////////////////
 	// Refract here //
 	//////////////////
-	// Snell's works from the intersection, so flip v direction
-	const double t_i = -v.dot(n) / v.length() * n.length();
-	const double t_r = t_i;
-	if (abs(1 * sin(t_i)) > 1) return false;
-	refract = (1 * cos(t_i) - cos(t_r)) * n - 1 * -v;
+	// if v.dot(n) > 0, then we're leaving the object
+	const double i_factor = v.dot(n) > 0 ? ir : 1. / ir;
+	//const double i_factor = 1;
+	const double cos_t = abs(v.dot(n));
+	const double radicand = 1 - (i_factor * i_factor) * (1 - (cos_t * cos_t));
+	if (radicand < 0) return false;
+	const double cos_r = sqrt(radicand);
+	refract = (i_factor * v + (i_factor * cos_t - cos_r) * n).unit();
 	return true;
 }
 
@@ -38,18 +41,20 @@ Point3D Scene::getColor(Ray3D ray, int rDepth, Point3D cLimit, unsigned int ligh
 	if (isinf(d)) return I;
 
 	// compute color
-	const auto lights = _globalData.lights;
-	Point3D ambient_sum;
-	Point3D light_contrib;
-	for (const auto light : lights) {
-		ambient_sum = ambient_sum + light->getAmbient(ray, iInfo);
-	}
-	for (const auto light : lights) {
-		const Point3D ambient = iInfo.material->ambient * ambient_sum;
-		const Point3D diffuse = light->getDiffuse(ray, iInfo);
-		const Point3D specular = light->getSpecular(ray, iInfo);
-		const Point3D shadow = light->transparency(iInfo, *this, cLimit, lightSamples);
-		light_contrib = light_contrib + ambient + (diffuse + specular) * shadow;
+	Point3D surface_contrib;
+	if (ray.direction.dot(iInfo.normal) < 0) {
+		const auto lights = _globalData.lights;
+		Point3D ambient_sum;
+		for (const auto light : lights) {
+			ambient_sum = ambient_sum + light->getAmbient(ray, iInfo);
+		}
+		for (const auto light : lights) {
+			const Point3D ambient = iInfo.material->ambient * ambient_sum;
+			const Point3D diffuse = light->getDiffuse(ray, iInfo);
+			const Point3D specular = light->getSpecular(ray, iInfo);
+			const Point3D shadow = light->transparency(iInfo, *this, cLimit, lightSamples);
+			surface_contrib = surface_contrib + ambient + (diffuse + specular) * shadow;
+		}
 	}
 
 	Point3D reflect_contrib;
@@ -69,7 +74,7 @@ Point3D Scene::getColor(Ray3D ray, int rDepth, Point3D cLimit, unsigned int ligh
 		refract_contrib = getColor(refract, rDepth - 1, cLimit / transparency, lightSamples) * transparency;
 	}
 
-	I = iInfo.material->emissive + light_contrib + reflect_contrib + refract_contrib;
+	I = iInfo.material->emissive + surface_contrib + reflect_contrib + refract_contrib;
 	I[0] = std::clamp(I[0], 0., 1.);
 	I[1] = std::clamp(I[1], 0., 1.);
 	I[2] = std::clamp(I[2], 0., 1.);
