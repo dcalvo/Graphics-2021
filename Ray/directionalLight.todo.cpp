@@ -2,6 +2,7 @@
 #include <Util/exceptions.h>
 #include "directionalLight.h"
 #include "scene.h"
+#include "Image/bmp.h"
 
 using namespace Ray;
 using namespace Util;
@@ -50,13 +51,21 @@ bool DirectionalLight::isInShadow(const RayShapeIntersectionInfo& iInfo, const S
 	return !isinf(shape->intersect(ray, occlusionInfo));
 }
 
-Point3D DirectionalLight::transparency(const RayShapeIntersectionInfo& iInfo, const Shape& shape,
-                                       Point3D cLimit) const {
+Point3D DirectionalLight::transparency(const RayShapeIntersectionInfo& iInfo, const Shape& shape, Point3D cLimit,
+                                       unsigned samples) const {
 	//////////////////////////////////////////////////////////
 	// Compute the transparency along the path to the light //
 	//////////////////////////////////////////////////////////
-	THROW("method undefined");
-	return Point3D(1., 1., 1.);
+	Point3D shadow(1., 1., 1.);
+	const Point3D dirTowardsLight = -_direction;
+	Ray3D ray(iInfo.position + dirTowardsLight * Epsilon, dirTowardsLight);
+	RayShapeIntersectionInfo occlusionInfo;
+	while (!isinf(shape.intersect(ray, occlusionInfo)) &&
+		(shadow[0] > cLimit[0] && shadow[1] > cLimit[1] && shadow[2] > cLimit[2])) {
+		shadow *= occlusionInfo.material->transparent;
+		ray = Ray3D(occlusionInfo.position + dirTowardsLight * Epsilon, dirTowardsLight);
+	}
+	return shadow;
 }
 
 void DirectionalLight::drawOpenGL(int index, GLSLProgram* glslProgram) const {

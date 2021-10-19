@@ -58,12 +58,22 @@ bool SpotLight::isInShadow(const RayShapeIntersectionInfo& iInfo, const Shape* s
 	return !isinf(shape->intersect(ray, occlusionInfo, range));
 }
 
-Point3D SpotLight::transparency(const RayShapeIntersectionInfo& iInfo, const Shape& shape, Point3D cLimit) const {
+Point3D SpotLight::transparency(const RayShapeIntersectionInfo& iInfo, const Shape& shape, Point3D cLimit,
+                                unsigned int samples) const {
 	//////////////////////////////////////////////////////////
 	// Compute the transparency along the path to the light //
 	//////////////////////////////////////////////////////////
-	THROW("method undefined");
-	return Point3D(1., 1., 1.);
+	Point3D shadow(1., 1., 1.);
+	const Point3D dirTowardsLight = (_location - iInfo.position).unit();
+	Ray3D ray(iInfo.position + dirTowardsLight * Epsilon, dirTowardsLight);
+	RayShapeIntersectionInfo occlusionInfo;
+	const BoundingBox1D range(Point1D(Epsilon), Point1D((_location - iInfo.position).length()));
+	while (!isinf(shape.intersect(ray, occlusionInfo, range)) &&
+		(shadow[0] > cLimit[0] && shadow[1] > cLimit[1] && shadow[2] > cLimit[2])) {
+		shadow *= occlusionInfo.material->transparent;
+		ray = Ray3D(occlusionInfo.position + dirTowardsLight * Epsilon, dirTowardsLight);
+	}
+	return shadow;
 }
 
 void SpotLight::drawOpenGL(int index, GLSLProgram* glslProgram) const {
