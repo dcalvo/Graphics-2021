@@ -15,6 +15,7 @@
 #include <Ray/directionalLight.h>
 #include <Ray/pointLight.h>
 #include <Ray/spotLight.h>
+#include <Ray/sphereLight.h>
 
 using namespace std;
 using namespace Ray;
@@ -70,6 +71,7 @@ int main( int argc , char *argv[] )
 		GlobalSceneData::LightFactories[ DirectionalLight::Directive() ] = new DerivedFactory< Light , DirectionalLight >();
 		GlobalSceneData::LightFactories[ PointLight      ::Directive() ] = new DerivedFactory< Light , PointLight >();
 		GlobalSceneData::LightFactories[ SpotLight       ::Directive() ] = new DerivedFactory< Light , SpotLight >();
+		GlobalSceneData::LightFactories[ SphereLight     ::Directive() ] = new DerivedFactory< Light , SphereLight >();
 
 		Shape::OpenGLTessellationComplexity = Complexity.value;
 		Window::interpolationType = InterpolantType.value-1;

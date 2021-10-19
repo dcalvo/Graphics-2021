@@ -27,7 +27,7 @@ bool Scene::Refract(Point3D v, Point3D n, double ir, Point3D& refract) {
 	return true;
 }
 
-Point3D Scene::getColor(Ray3D ray, int rDepth, Point3D cLimit) {
+Point3D Scene::getColor(Ray3D ray, int rDepth, Point3D cLimit, unsigned int lightSamples) {
 	////////////////////////////////////////////////
 	// Get the color associated with the ray here //
 	////////////////////////////////////////////////
@@ -48,7 +48,7 @@ Point3D Scene::getColor(Ray3D ray, int rDepth, Point3D cLimit) {
 		const Point3D ambient = iInfo.material->ambient * ambient_sum;
 		const Point3D diffuse = light->getDiffuse(ray, iInfo);
 		const Point3D specular = light->getSpecular(ray, iInfo);
-		const Point3D shadow = light->isInShadow(iInfo, this) ? Point3D(0., 0., 0.) : Point3D(1., 1., 1.);
+		const Point3D shadow = light->transparency(iInfo, *this, cLimit, lightSamples);
 		light_contrib = light_contrib + ambient + (diffuse + specular) * shadow;
 	}
 
@@ -58,7 +58,7 @@ Point3D Scene::getColor(Ray3D ray, int rDepth, Point3D cLimit) {
 		reflect.direction = Reflect(ray.direction, iInfo.normal);
 		reflect.position = iInfo.position + reflect.direction * Epsilon;
 		const Point3D specularity = iInfo.material->specular;
-		reflect_contrib = getColor(reflect, rDepth - 1, cLimit / specularity) * specularity;
+		reflect_contrib = getColor(reflect, rDepth - 1, cLimit / specularity, lightSamples) * specularity;
 	}
 
 	Point3D refract_contrib;
@@ -66,7 +66,7 @@ Point3D Scene::getColor(Ray3D ray, int rDepth, Point3D cLimit) {
 	if (Refract(ray.direction, iInfo.normal, iInfo.material->ir, refract.direction)) {
 		refract.position = iInfo.position + refract.direction * Epsilon;
 		const Point3D transparency = iInfo.material->transparent;
-		refract_contrib = getColor(refract, rDepth - 1, cLimit / transparency) * transparency;
+		refract_contrib = getColor(refract, rDepth - 1, cLimit / transparency, lightSamples) * transparency;
 	}
 
 	I = iInfo.material->emissive + light_contrib + reflect_contrib + refract_contrib;

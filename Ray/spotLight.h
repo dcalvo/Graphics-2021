@@ -49,7 +49,7 @@ namespace Ray {
 		Util::Point3D getIntensity(Util::Point3D light, const RayShapeIntersectionInfo& iInfo) const;
 		bool isInShadow(const class RayShapeIntersectionInfo& iInfo, const Shape* shape) const override;
 		Util::Point3D transparency(const class RayShapeIntersectionInfo& iInfo, const class Shape& shape,
-		                           Util::Point3D cLimit) const override;
+		                           Util::Point3D cLimit, unsigned int samples) const override;
 		void drawOpenGL(int index, GLSLProgram* glslProgram) const override;
 	};
 }

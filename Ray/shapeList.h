@@ -47,7 +47,7 @@ namespace Ray {
 		/** The inverse of the static transformation associated to the shape */
 		Util::Matrix4D _inverseTransform;
 
-		/** The static _normal transformation associated to the shape */
+		/** The static normal transformation associated to the shape */
 		Util::Matrix3D _normalTransform;
 	public:
 		/** This static method returns the directive describing the shape. */

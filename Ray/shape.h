@@ -17,15 +17,14 @@
 #include "GLSLProgram.h"
 
 #ifdef VERBOSE_MESSAGING
-inline void AssertOpenGLState( const char *fileName , int line , const char *functionName )
-{
+inline void AssertOpenGLState(const char* fileName, int line, const char* functionName) {
 	GLenum errorCode;
-	if( ( errorCode=glGetError() )!=GL_NO_ERROR )
-	{
-		char *buffer = Util::MakeMessageString( "[OPEN_GL ERROR]" , fileName , line , functionName , "%s (%d)" , gluErrorString( errorCode ) , errorCode );
+	if ((errorCode = glGetError()) != GL_NO_ERROR) {
+		char* buffer = Util::MakeMessageString("[OPEN_GL ERROR]", fileName, line, functionName, "%s (%d)",
+		                                       gluErrorString(errorCode), errorCode);
 		std::cerr << buffer << std::endl;
 		delete[] buffer;
-		exit( 0 );
+		exit(0);
 	}
 }
 #ifndef ASSERT_OPEN_GL_STATE
@@ -49,47 +48,51 @@ inline void AssertOpenGLState( const char *functionName )
 #endif // VERBOSE_MESSAGING
 
 
-namespace Ray
-{
+namespace Ray {
 	/** This class stores information about the number of rays cast and the number of ray-primitive intersections performed. */
-	struct RayTracingStats
-	{
+	struct RayTracingStats {
 		static size_t _RayNum;
 		static size_t _RayPrimitiveIntersectionNum;
 		static size_t _RayBoundingBoxIntersectionNum;
 	public:
-
-		static void Reset( void );
-		static void IncrementRayNum( void );
-		static void IncrementRayPrimitiveIntersectionNum( void );
-		static void IncrementRayBoundingBoxIntersectionNum( void );
-		static size_t RayNum( void );
-		static size_t RayPrimitiveIntersectionNum( void );
-		static size_t RayBoundingBoxIntersectionNum( void );
+		static void Reset(void);
+		static void IncrementRayNum(void);
+		static void IncrementRayPrimitiveIntersectionNum(void);
+		static void IncrementRayBoundingBoxIntersectionNum(void);
+		static size_t RayNum(void);
+		static size_t RayPrimitiveIntersectionNum(void);
+		static size_t RayBoundingBoxIntersectionNum(void);
 	};
 
 	/** This class serves as a wrapper for Util::BoundingBox3D, calling RayTracingStats::IncrementRayBoundingBoxIntersectionNum before performing the intersection. */
-	struct ShapeBoundingBox : public Util::BoundingBox3D
-	{
-		ShapeBoundingBox( void ) : Util::BoundingBox3D() {};
-		ShapeBoundingBox( const ShapeBoundingBox &bBox ) : Util::BoundingBox3D( bBox ) {}
-		ShapeBoundingBox( const Util::BoundingBox3D &bBox ) : Util::BoundingBox3D( bBox ) {}
-		ShapeBoundingBox &operator = ( const ShapeBoundingBox &bBox ){ Util::BoundingBox3D::operator = ( bBox ) ; return *this; }
-		ShapeBoundingBox &operator = ( const Util::BoundingBox3D &bBox ){ Util::BoundingBox3D::operator = ( bBox ) ; return *this; }
-		Util::BoundingBox1D intersect( const Util::Ray3D &ray ) const;
+	struct ShapeBoundingBox : public Util::BoundingBox3D {
+		ShapeBoundingBox(void) : Util::BoundingBox3D() {};
+		ShapeBoundingBox(const ShapeBoundingBox& bBox) : Util::BoundingBox3D(bBox) {}
+		ShapeBoundingBox(const Util::BoundingBox3D& bBox) : Util::BoundingBox3D(bBox) {}
+
+		ShapeBoundingBox& operator =(const ShapeBoundingBox& bBox) {
+			Util::BoundingBox3D::operator =(bBox);
+			return *this;
+		}
+
+		ShapeBoundingBox& operator =(const Util::BoundingBox3D& bBox) {
+			Util::BoundingBox3D::operator =(bBox);
+			return *this;
+		}
+
+		Util::BoundingBox1D intersect(const Util::Ray3D& ray) const;
 	};
 
 	/** This is the abstract class that all ray-traceable objects must implement. */
-	class Shape
-	{
-		friend std::ostream &operator << ( std::ostream & , const Shape & );
-		friend std::istream &operator >> ( std::istream & ,       Shape & );
+	class Shape {
+		friend std::ostream& operator <<(std::ostream&, const Shape&);
+		friend std::istream& operator >>(std::istream&, Shape&);
 
 		/** This method writes the Shape into the stream (including the starting directive) */
-		virtual void _write( std::ostream &stream ) const = 0;
+		virtual void _write(std::ostream& stream) const = 0;
 
 		/** This method reads the Shape from the stream (excluding the starting directive) */
-		virtual void _read( std::istream &stream ) = 0;
+		virtual void _read(std::istream& stream) = 0;
 	protected:
 		/** This member represents the bounding box of the shape. */
 		ShapeBoundingBox _bBox;
@@ -102,51 +105,59 @@ namespace Ray
 		static unsigned int WriteInsetSize;
 
 		/** This static method insets for writing. */
-		static void WriteInset( std::ostream &stream );
+		static void WriteInset(std::ostream& stream);
 
 		/** The destructor */
-		virtual ~Shape( void ){}
+		virtual ~Shape(void) {}
 
 		/** The method returns the bounding box of the shape */
-		ShapeBoundingBox boundingBox( void ) const;
+		ShapeBoundingBox boundingBox(void) const;
 
 		/** This method should be called (once) immediately after setting up the scene graph */
-		virtual void init( const class LocalSceneData& data ) = 0;
+		virtual void init(const class LocalSceneData& data) = 0;
 
 		/** This method should be called (once) after an OpenGL context has been created */
-		virtual void initOpenGL( void ) = 0;
+		virtual void initOpenGL(void) = 0;
 
 		/** This method should be called to update the bounding boxes in the scene */
-		virtual void updateBoundingBox( void ) = 0;
+		virtual void updateBoundingBox(void) = 0;
 
 		/** This method returns the name of the shape */
-		virtual std::string name( void ) const = 0;
+		virtual std::string name(void) const = 0;
 
 		/** This method computes the intersection of the shape with the ray.
 		*** It should return the first value, t, within the prescribed range for which the validity lambda is true.
 		*** If a valid intersection is found, it is returned and the intersection information is set.
 		*** Otherwise a value of Infinity is returned.
 		*** By default, the range is assumed to be (Epsilon,Infinity) and the validity function is a trivial function that returns true. */
-		virtual double intersect( Util::Ray3D ray , class RayShapeIntersectionInfo &iInfo , Util::BoundingBox1D range = Util::BoundingBox1D( Util::Epsilon , Util::Infinity ) , std::function< bool (double) > validityLambda = [] ( double t ){ return true; } ) const = 0;
+		virtual double intersect(Util::Ray3D ray, class RayShapeIntersectionInfo& iInfo,
+		                         Util::BoundingBox1D range = Util::BoundingBox1D(Util::Epsilon, Util::Infinity),
+		                         std::function<bool (double)> validityLambda = [](double t) { return true; }) const = 0;
 
 		/** This method determines if a point is inside a shape.
 		*** It is assumed that if the shape is not water-tight, the method returns false. */
-		virtual bool isInside( Util::Point3D p ) const = 0;
+		virtual bool isInside(Util::Point3D p) const = 0;
 
 		/** This method calls the necessary OpenGL commands to render the primitive. */
-		virtual void drawOpenGL( GLSLProgram *glslProgram ) const=0;
+		virtual void drawOpenGL(GLSLProgram* glslProgram) const =0;
 
 		/** This method adds a triangle to the list of triangles (if the object is of type RayTriangle). */
-		virtual void addTrianglesOpenGL( std::vector< class TriangleIndex > &triangles ) {}
+		virtual void addTrianglesOpenGL(std::vector<class TriangleIndex>& triangles) {}
 
 		/** This method returns the count of basic shapes contained within the Shape. */
-		virtual size_t primitiveNum( void ) const = 0;
+		virtual size_t primitiveNum(void) const = 0;
 	};
 
 	/** This operator writes the shape out to a stream. */
-	inline std::ostream &operator << ( std::ostream &stream , const Shape &shape ){ shape._write( stream ) ; return stream; }
+	inline std::ostream& operator <<(std::ostream& stream, const Shape& shape) {
+		shape._write(stream);
+		return stream;
+	}
 
 	/** This operator reads a shape from a stream. */
-	inline std::istream &operator >> ( std::istream &stream ,       Shape &shape ){ shape._read( stream ) ; return stream; }
+	inline std::istream& operator >>(std::istream& stream, Shape& shape) {
+		shape._read(stream);
+		return stream;
+	}
 }
 #endif // SHAPE_INCLUDED

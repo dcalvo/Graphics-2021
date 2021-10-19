@@ -15,6 +15,7 @@
 #include <Ray/directionalLight.h>
 #include <Ray/pointLight.h>
 #include <Ray/spotLight.h>
+#include <Ray/sphereLight.h>
 
 using namespace std;
 using namespace Ray;
@@ -29,10 +30,12 @@ CmdLineParameter< int > ImageWidth( "width" , 640 );
 CmdLineParameter< int > ImageHeight( "height" , 480 );
 CmdLineParameter< int > RecursionLimit( "rLimit" , 5 );
 CmdLineParameter< float > CutOffThreshold( "cutOff" , 0.0001f );
+CmdLineParameter< int > LightSamples( "lSamples" , 100 );
+
 
 CmdLineReadable* params[] =
 {
-	&InputRayFile , &OutputImageFile , &ImageWidth , &ImageHeight , &RecursionLimit , &CutOffThreshold ,
+	&InputRayFile , &OutputImageFile , &ImageWidth , &ImageHeight , &RecursionLimit , &CutOffThreshold , &LightSamples ,
 	NULL
 };
 
@@ -45,6 +48,7 @@ void ShowUsage( const string &ex )
 	cout << "\t[--" << ImageHeight.name << " <image height>=" << ImageHeight.value << "]" << endl;
 	cout << "\t[--" << RecursionLimit.name << " <recursion limit>=" << RecursionLimit.value << "]" << endl;
 	cout << "\t[--" << CutOffThreshold.name << " <cut-off threshold>=" << CutOffThreshold.value << "]" << endl;
+	cout << "\t[--" << LightSamples.name << " <light samples>=" << LightSamples.value << "]" << endl;
 }
 
 /** A wrapper class for size_t that prints out comma-separated numbers */
@@ -105,6 +109,7 @@ int main( int argc , char *argv[] )
 		GlobalSceneData::LightFactories[ DirectionalLight::Directive() ] = new DerivedFactory< Light , DirectionalLight >();
 		GlobalSceneData::LightFactories[ PointLight      ::Directive() ] = new DerivedFactory< Light , PointLight >();
 		GlobalSceneData::LightFactories[ SpotLight       ::Directive() ] = new DerivedFactory< Light , SpotLight >();
+		GlobalSceneData::LightFactories[ SphereLight     ::Directive() ] = new DerivedFactory< Light , SphereLight >();
 
 		ifstream istream;
 		istream.open( InputRayFile.value );
@@ -116,7 +121,7 @@ int main( int argc , char *argv[] )
 
 		timer.reset();
 		RayTracingStats::Reset();
-		Image32 img = scene.rayTrace( ImageWidth.value , ImageHeight.value , RecursionLimit.value , CutOffThreshold.value );
+		Image32 img = scene.rayTrace( ImageWidth.value , ImageHeight.value , RecursionLimit.value , CutOffThreshold.value , LightSamples.value );
 		std::cout << "\tRay-traced: " << timer.elapsed() << " seconds" << std::endl;
 		std::cout << "\tPixels: " << Size_t( ImageWidth.value ) << " x " << Size_t( ImageHeight.value ) << std::endl;
 		std::cout << "\tPrimitives: " << Size_t( scene.primitiveNum() ) << std::endl;

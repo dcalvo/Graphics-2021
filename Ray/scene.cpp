@@ -497,7 +497,7 @@ void Scene::drawOpenGL( void ) const
 	ASSERT_OPEN_GL_STATE();	
 }
 
-Image32 Scene::rayTrace( int width , int height , int rLimit , double cLimit )
+Image32 Scene::rayTrace( int width , int height , int rLimit , double cLimit , unsigned int lightSamples )
 {
 	updateBoundingBox();
 	Image32 img;
@@ -510,7 +510,7 @@ Image32 Scene::rayTrace( int width , int height , int rLimit , double cLimit )
 			try
 			{
 				Ray3D ray = _globalData.camera.getRay( i , height-j-1 , width , height );
-				Point3D c = getColor( ray , rLimit , Point3D( cLimit , cLimit , cLimit ) );
+				Point3D c = getColor( ray , rLimit , Point3D( cLimit , cLimit , cLimit ) , lightSamples );
 				Pixel32 p;
 				p.r = (int)(c[0]*255);
 				p.g = (int)(c[1]*255);

@@ -146,20 +146,20 @@ namespace Ray {
 		/** The base directory */
 		static std::string BaseDir;
 
-		/** This function reflects the vector v about the _normal n. */
+		/** This function reflects the vector v about the normal n. */
 		static Util::Point3D Reflect(Util::Point3D v, Util::Point3D n);
 
-		/** This function will refract the vector about the _normal using the provided indices of refraction.
+		/** This function will refract the vector about the normal using the provided indices of refraction.
 		*** The refracted vector is written into refract and a value of true is returned if the refraction succeeded (i.e. the necessary arcsin could be computed). */
 		static bool Refract(Util::Point3D v, Util::Point3D n, double ir, Util::Point3D& refract);
 
 		/** This is the function responsible for the recursive ray-tracing returning the color obtained
 		*** by shooting a ray into the scene and recursing until either the recursion depth has been reached
 		*** or the contribution from subsequent bounces is guaranteed to be less than the cut-off. */
-		Util::Point3D getColor(Util::Ray3D ray, int rDepth, Util::Point3D cLimit);
+		Util::Point3D getColor(Util::Ray3D ray, int rDepth, Util::Point3D cLimit, unsigned int lightSamples);
 
 		/** This method ray-traces the scene and returns the computed image */
-		Image::Image32 rayTrace(int width, int height, int rLimit, double cLimit);
+		Image::Image32 rayTrace(int width, int height, int rLimit, double cLimit, unsigned int lightSamples);
 
 		/** This method should be called (once) after an OpenGL context has been created */
 		void initOpenGL(void) override;
@@ -201,7 +201,7 @@ namespace Ray {
 		/** The position of the vertex */
 		Util::Point3D position;
 
-		/** The _normal at the vertex */
+		/** The normal at the vertex */
 		Util::Point3D normal;
 
 		/** The texture coordinates at the vertex */
@@ -223,7 +223,7 @@ namespace Ray {
 		/** The position, in world coordinates, of the intersection */
 		Util::Point3D position;
 
-		/** The _normal of the shape at the point of intersection */
+		/** The normal of the shape at the point of intersection */
 		Util::Point3D normal;
 
 		/** The texture coordinates of the the shape at the point of intersection */

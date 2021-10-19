@@ -1,5 +1,5 @@
 TARGET = Ray
-SOURCE = GLSLProgram.cpp mouse.cpp mouse.cpp camera.cpp cone.todo.cpp directionalLight.cpp shapeList.cpp pointLight.cpp scene.todo.cpp spotLight.cpp triangle.todo.cpp box.cpp camera.todo.cpp cylinder.cpp directionalLight.todo.cpp shapeList.todo.cpp pointLight.todo.cpp sphere.cpp spotLight.todo.cpp window.cpp box.todo.cpp cone.cpp cylinder.todo.cpp fileInstance.cpp scene.cpp sphere.todo.cpp triangle.cpp shape.cpp torus.cpp torus.todo.cpp
+SOURCE = GLSLProgram.cpp mouse.cpp mouse.cpp camera.cpp cone.todo.cpp directionalLight.cpp shapeList.cpp pointLight.cpp scene.todo.cpp spotLight.cpp triangle.todo.cpp box.cpp camera.todo.cpp cylinder.cpp directionalLight.todo.cpp shapeList.todo.cpp pointLight.todo.cpp sphereLight.cpp sphereLight.todo.cpp sphere.cpp spotLight.todo.cpp window.cpp box.todo.cpp cone.cpp cylinder.todo.cpp fileInstance.cpp scene.cpp sphere.todo.cpp triangle.cpp shape.cpp torus.cpp torus.todo.cpp
 
 TARGET_LIB = lib$(TARGET).a
 

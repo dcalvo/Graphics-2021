@@ -5,6 +5,7 @@
 namespace Ray {
 	/** This class describes a point-light light-source. This light has a fixed position and the light attenuates as function of the distance from the light-source. */
 	class PointLight : public Light {
+	protected:
 		/** The position of the spot-light */
 		Util::Point3D _location;
 
@@ -35,7 +36,7 @@ namespace Ray {
 		Util::Point3D getIntensity(Util::Point3D light, const RayShapeIntersectionInfo& iInfo) const;
 		bool isInShadow(const class RayShapeIntersectionInfo& iInfo, const class Shape* shape) const override;
 		Util::Point3D transparency(const class RayShapeIntersectionInfo& iInfo, const class Shape& shape,
-		                           Util::Point3D cLimit) const override;
+		                           Util::Point3D cLimit, unsigned int samples) const override;
 		void drawOpenGL(int index, GLSLProgram* glslProgram) const override;
 	};
 }

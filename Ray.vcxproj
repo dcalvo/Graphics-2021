@@ -41,6 +41,8 @@
     <ClCompile Include="Ray\shapeList.todo.cpp" />
     <ClCompile Include="Ray\sphere.cpp" />
     <ClCompile Include="Ray\sphere.todo.cpp" />
+    <ClCompile Include="Ray\sphereLight.cpp" />
+    <ClCompile Include="Ray\sphereLight.todo.cpp" />
     <ClCompile Include="Ray\spotLight.cpp" />
     <ClCompile Include="Ray\spotLight.todo.cpp" />
     <ClCompile Include="Ray\torus.cpp" />
@@ -65,6 +67,7 @@
     <ClInclude Include="Ray\shape.h" />
     <ClInclude Include="Ray\shapeList.h" />
     <ClInclude Include="Ray\sphere.h" />
+    <ClInclude Include="Ray\sphereLight.h" />
     <ClInclude Include="Ray\spotLight.h" />
     <ClInclude Include="Ray\torus.h" />
     <ClInclude Include="Ray\triangle.h" />
@@ -156,6 +159,7 @@
       <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
       <OpenMPSupport>
       </OpenMPSupport>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
