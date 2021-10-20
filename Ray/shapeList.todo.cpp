@@ -40,17 +40,24 @@ double ShapeList::intersect(Ray3D ray, RayShapeIntersectionInfo& iInfo, Bounding
 	//////////////////////////////////////////////////////////////////
 	// Compute the intersection of the shape list with the ray here //
 	//////////////////////////////////////////////////////////////////
-	double closest_d = Infinity;
+	std::vector<ShapeBoundingBoxHit> hits;
 	for (const auto shape : shapes) {
-		RayShapeIntersectionInfo thisInfo;
-		const double d = shape->intersect(ray, thisInfo, range, validityLambda);
-		if (isinf(d) || d < 0 || !range.isInside(d)) continue;
-		if (d < closest_d) {
-			closest_d = d;
-			iInfo = thisInfo;
-		}
+		ShapeBoundingBoxHit hit{};
+		const BoundingBox1D r = shape->boundingBox().intersect(ray);
+		if (r.isEmpty() || r[0][0] > range[1][0]) continue;
+		hit.t = r[0][0] > 0 ? r[0][0] : r[1][0];
+		hit.shape = shape;
+		hits.push_back(hit);
 	}
-	return closest_d;
+	std::sort(hits.begin(), hits.end(), ShapeBoundingBoxHit::Compare);
+	for (const auto hit : hits) {
+		RayShapeIntersectionInfo thisInfo;
+		const double d = hit.shape->intersect(ray, thisInfo, range, validityLambda);
+		if (isinf(d) || !range.isInside(d)) continue;
+		iInfo = thisInfo;
+		return d;
+	}
+	return Infinity;
 }
 
 bool ShapeList::isInside(Point3D p) const {
@@ -68,14 +75,18 @@ void ShapeList::init(const LocalSceneData& data) {
 	///////////////////////////////////
 	// Do any additional set-up here //
 	///////////////////////////////////
-	WARN_ONCE("method undefined");
 }
 
 void ShapeList::updateBoundingBox(void) {
 	///////////////////////////////
 	// Set the _bBox object here //
 	///////////////////////////////
-	WARN_ONCE("method undefined");
+	BoundingBox3D bBox;
+	for (const auto shape : shapes) {
+		shape->updateBoundingBox();
+		bBox += shape->boundingBox();
+	}
+	_bBox = ShapeBoundingBox(bBox);
 }
 
 void ShapeList::initOpenGL(void) {
@@ -120,7 +131,7 @@ double AffineShape::intersect(Ray3D ray, RayShapeIntersectionInfo& iInfo, Boundi
 	// transform hit info L2G
 	iInfo.position = localToGlobal * iInfo.position;
 	iInfo.normal = (localToGlobalNormal * iInfo.normal).unit();
-	const double d = (iInfo.position - ray.position).length() / ray.direction.length();
+	const double d = (iInfo.position - ray.position).length();
 	return d;
 }
 
@@ -136,8 +147,10 @@ void AffineShape::updateBoundingBox(void) {
 	///////////////////////////////
 	// Set the _bBox object here //
 	///////////////////////////////
-	THROW("method undefined");
 	_shape->updateBoundingBox();
+	const Matrix4D globalToLocal = getInverseMatrix();
+	// TODO: maybe inverse maybe not?
+	_bBox = ShapeBoundingBox(globalToLocal.inverse() * _shape->boundingBox());
 }
 
 void AffineShape::drawOpenGL(GLSLProgram* glslProgram) const {

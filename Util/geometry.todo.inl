@@ -26,41 +26,54 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
 DAMAGE.
 */
 
-namespace Util
-{
+namespace Util {
 	////////////
 	// Matrix //
 	////////////
-	template< unsigned int Dim >
-	Matrix< Dim > Matrix< Dim >::Exp( const Matrix &m , int terms )
-	{
+	template <unsigned int Dim>
+	Matrix<Dim> Matrix<Dim>::Exp(const Matrix& m, int terms) {
 		//////////////////////////////////////
 		// Compute the matrix exponent here //
 		//////////////////////////////////////
-		THROW( "method undefined" );
+		THROW("method undefined");
 		return Matrix();
 	}
 
-	template< unsigned int Dim >
-	Matrix< Dim > Matrix< Dim >::closestRotation( void ) const
-	{
+	template <unsigned int Dim>
+	Matrix<Dim> Matrix<Dim>::closestRotation(void) const {
 		///////////////////////////////////////
 		// Compute the closest rotation here //
 		///////////////////////////////////////
-		THROW( "method undefined" );
+		THROW("method undefined");
 		return Matrix();
 	}
 
 	/////////////////
 	// BoundingBox //
 	/////////////////
-	template< unsigned int Dim >
-	BoundingBox< 1 > BoundingBox< Dim >::intersect( const Ray< Dim > &ray ) const
-	{
+	template <unsigned int Dim>
+	BoundingBox<1> BoundingBox<Dim>::intersect(const Ray<Dim>& ray) const {
 		///////////////////////////////////////////////////////////////
 		// Compute the intersection of a BoundingBox with a Ray here //
 		///////////////////////////////////////////////////////////////
-		THROW( "method undefined" );
-		return BoundingBox<1>();
+		const Point<Dim> bmin = _p[0], bmax = _p[1];
+		double t1[Dim], t2[Dim];
+		Point<Dim> inv_dir;
+		for (int i = 0; i < Dim; i++)
+			inv_dir[i] = 1 / ray.direction[i];
+		// adapted from https://tavianator.com/2011/ray_box.html
+		t1[0] = (bmin[0] - ray.position[0]) * inv_dir[0];
+		t2[0] = (bmax[0] - ray.position[0]) * inv_dir[0];
+		double tmin = std::min(t1[0], t2[0]);
+		double tmax = std::max(t1[0], t2[0]);
+		for (int i = 1; i < Dim; i++) {
+			t1[i] = (bmin[i] - ray.position[i]) * inv_dir[i];
+			t2[i] = (bmax[i] - ray.position[i]) * inv_dir[i];
+			tmin = std::max(tmin, std::min(t1[i], t2[i]));
+			tmax = std::min(tmax, std::max(t1[i], t2[i]));
+		}
+		auto miss = BoundingBox1D();
+		miss[0] = Infinity, miss[1] = -Infinity; // BoundingBox constructor would order these, so do it manually
+		return tmax >= tmin && tmax > 0 ? BoundingBox1D(tmin, tmax) : miss;
 	}
 }

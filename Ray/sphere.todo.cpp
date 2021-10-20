@@ -29,7 +29,8 @@ void Sphere::updateBoundingBox(void) {
 	///////////////////////////////
 	// Set the _bBox object here //
 	///////////////////////////////
-	THROW("method undefined");
+	const Point3D radius_v(radius, radius, radius);
+	_bBox = ShapeBoundingBox(BoundingBox3D(center - radius_v, center + radius_v));
 }
 
 void Sphere::initOpenGL(void) {
@@ -53,8 +54,13 @@ double Sphere::intersect(Ray3D ray, RayShapeIntersectionInfo& iInfo, BoundingBox
 	double roots[2];
 	const unsigned int root_num = p.roots(roots);
 	if (!root_num) return Infinity;
-	// get closest root
-	const double root = (root_num == 2 && roots[1] < roots[0] && roots[1] > 0.) ? roots[1] : roots[0];
+	// get smallest positive root
+	double root;
+	if (root_num == 2) {
+		if (roots[0] > 0 && roots[1] > 0) root = std::min(roots[0], roots[1]);
+		else root = roots[(roots[0] > 0 ? 0 : 1)];
+	}
+	else root = roots[0];
 	if (!range.isInside(root)) return Infinity;
 	iInfo.position = ray(root);
 	iInfo.normal = (iInfo.position - center).unit();
