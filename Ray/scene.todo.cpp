@@ -41,6 +41,7 @@ Point3D Scene::getColor(Ray3D ray, int rDepth, Point3D cLimit, unsigned int ligh
 	if (isinf(d)) return I;
 
 	// compute color
+	Point3D emissive_contrib = iInfo.material->emissive;
 	Point3D surface_contrib;
 	if (ray.direction.dot(iInfo.normal) < 0) {
 		const auto lights = _globalData.lights;
@@ -49,10 +50,20 @@ Point3D Scene::getColor(Ray3D ray, int rDepth, Point3D cLimit, unsigned int ligh
 			ambient_sum = ambient_sum + light->getAmbient(ray, iInfo);
 		}
 		for (const auto light : lights) {
-			const Point3D ambient = iInfo.material->ambient * ambient_sum;
-			const Point3D diffuse = light->getDiffuse(ray, iInfo);
-			const Point3D specular = light->getSpecular(ray, iInfo);
-			const Point3D shadow = light->transparency(iInfo, *this, cLimit, lightSamples);
+			Point3D ambient = iInfo.material->ambient * ambient_sum;
+			Point3D diffuse = light->getDiffuse(ray, iInfo);
+			Point3D specular = light->getSpecular(ray, iInfo);
+			Point3D shadow = light->transparency(iInfo, *this, cLimit, lightSamples);
+			if (iInfo.material->tex) {
+				const double u = iInfo.material->tex->_image.width() * iInfo.texture[0];
+				const double v = iInfo.material->tex->_image.height() * iInfo.texture[1];
+				const Image::Pixel32 pix = iInfo.material->tex->_image.bilinearSample(Point2D(u, v));
+				const Point3D tex(pix.r / 255., pix.g / 255., pix.b / 255.);
+				emissive_contrib *= tex;
+				ambient *= tex;
+				diffuse *= tex;
+				specular *= tex;
+			}
 			surface_contrib = surface_contrib + ambient + (diffuse + specular) * shadow;
 		}
 	}
@@ -74,7 +85,7 @@ Point3D Scene::getColor(Ray3D ray, int rDepth, Point3D cLimit, unsigned int ligh
 		refract_contrib = getColor(refract, rDepth - 1, cLimit / transparency, lightSamples) * transparency;
 	}
 
-	I = iInfo.material->emissive + surface_contrib + reflect_contrib + refract_contrib;
+	I = emissive_contrib + surface_contrib + reflect_contrib + refract_contrib;
 	I[0] = std::clamp(I[0], 0., 1.);
 	I[1] = std::clamp(I[1], 0., 1.);
 	I[2] = std::clamp(I[2], 0., 1.);

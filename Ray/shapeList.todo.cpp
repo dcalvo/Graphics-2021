@@ -205,8 +205,6 @@ void TriangleList::init(const LocalSceneData& data) {
 	///////////////////////////////////
 	// Do any additional set-up here //
 	///////////////////////////////////
-
-	WARN_ONCE("method undefined");
 }
 
 void TriangleList::initOpenGL(void) {

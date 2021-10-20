@@ -71,14 +71,17 @@ double Triangle::intersect(Ray3D ray, RayShapeIntersectionInfo& iInfo, BoundingB
 	// Compute the intersection of the shape with the ray here //
 	/////////////////////////////////////////////////////////////
 	if (abs(ray.direction.dot(_plane.normal)) < Epsilon) return Infinity;
-	const double t = -(ray.position - _v[0]->position).dot(_plane.normal) / ray.direction.dot(_plane.normal);
+	auto p1 = _v[0];
+	auto p2 = _v[1];
+	auto p3 = _v[2];
+	const double t = -(ray.position - p1->position).dot(_plane.normal) / ray.direction.dot(_plane.normal);
 	if (!range.isInside(t)) return Infinity;
 	const Point3D p = ray(t); // point of intersection with the plane
 	const auto [alpha, beta, gamma] = barycentricCoordinates(p);
 	if (alpha < 0 || beta < 0 || gamma < 0) return Infinity;
 	iInfo.position = p;
-	iInfo.normal = (alpha * _v[0]->normal + beta * _v[1]->normal + gamma * _v[2]->normal).unit();
-	// TODO: texture?
+	iInfo.normal = (alpha * p1->normal + beta * p2->normal + gamma * p3->normal).unit();
+	iInfo.texture = (alpha * p1->texCoordinate + beta * p2->texCoordinate + gamma * p3->texCoordinate);
 	return t;
 }
 
