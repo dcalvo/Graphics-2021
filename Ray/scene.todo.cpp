@@ -22,10 +22,10 @@ bool Scene::Refract(Point3D v, Point3D n, double ir, Point3D& refract) {
 	double i_factor = 1 / ir;
 	// if v.dot(n) > 0, then we're leaving the object
 	if (v.dot(n) > 0) {
-		i_factor = ir; // air index is 1
+		i_factor = ir; // air index is 1, so just ir
 		n = -n; // flip n so the rest of the calculation still works
 	}
-	const double cos_t = abs(v.dot(n));
+	const double cos_t = fabs(v.dot(n));
 	const double radicand = 1 - (i_factor * i_factor) * (1 - (cos_t * cos_t));
 	if (radicand < 0) return false;
 	const double cos_r = sqrt(radicand);
@@ -46,29 +46,27 @@ Point3D Scene::getColor(Ray3D ray, int rDepth, Point3D cLimit, unsigned int ligh
 	// compute color
 	Point3D emissive_contrib = iInfo.material->emissive;
 	Point3D surface_contrib;
-	if (ray.direction.dot(iInfo.normal) < 0) {
-		const auto lights = _globalData.lights;
-		Point3D ambient_sum;
-		for (const auto light : lights) {
-			ambient_sum = ambient_sum + light->getAmbient(ray, iInfo);
+	const auto lights = _globalData.lights;
+	Point3D ambient_sum;
+	for (const auto light : lights) {
+		ambient_sum = ambient_sum + light->getAmbient(ray, iInfo);
+	}
+	for (const auto light : lights) {
+		Point3D ambient = iInfo.material->ambient * ambient_sum;
+		Point3D diffuse = light->getDiffuse(ray, iInfo);
+		Point3D specular = light->getSpecular(ray, iInfo);
+		Point3D shadow = light->transparency(iInfo, *this, cLimit, lightSamples);
+		if (iInfo.material->tex) {
+			const double u = iInfo.material->tex->_image.width() * iInfo.texture[0];
+			const double v = iInfo.material->tex->_image.height() * iInfo.texture[1];
+			const Image::Pixel32 pix = iInfo.material->tex->_image.bilinearSample(Point2D(u, v));
+			const Point3D tex(pix.r / 255., pix.g / 255., pix.b / 255.);
+			emissive_contrib *= tex;
+			ambient *= tex;
+			diffuse *= tex;
+			specular *= tex;
 		}
-		for (const auto light : lights) {
-			Point3D ambient = iInfo.material->ambient * ambient_sum;
-			Point3D diffuse = light->getDiffuse(ray, iInfo);
-			Point3D specular = light->getSpecular(ray, iInfo);
-			Point3D shadow = light->transparency(iInfo, *this, cLimit, lightSamples);
-			if (iInfo.material->tex) {
-				const double u = iInfo.material->tex->_image.width() * iInfo.texture[0];
-				const double v = iInfo.material->tex->_image.height() * iInfo.texture[1];
-				const Image::Pixel32 pix = iInfo.material->tex->_image.bilinearSample(Point2D(u, v));
-				const Point3D tex(pix.r / 255., pix.g / 255., pix.b / 255.);
-				emissive_contrib *= tex;
-				ambient *= tex;
-				diffuse *= tex;
-				specular *= tex;
-			}
-			surface_contrib = surface_contrib + ambient + (diffuse + specular) * shadow;
-		}
+		surface_contrib = surface_contrib + ambient + (diffuse + specular) * shadow;
 	}
 
 	Point3D reflect_contrib;

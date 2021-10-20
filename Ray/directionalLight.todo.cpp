@@ -40,7 +40,8 @@ Point3D DirectionalLight::getSpecular(Ray3D ray, const RayShapeIntersectionInfo&
 	const Point3D dirTowardsLight = -_direction;
 	if (iInfo.normal.dot(dirTowardsLight) < 0) return specular;
 	const Point3D r = (dirTowardsLight - 2 * (iInfo.normal.dot(dirTowardsLight) * iInfo.normal)).unit();
-	const double vr = std::clamp(ray.direction.dot(r), 0., 1.);
+	const double vr = ray.direction.dot(r);
+	if (vr < 0) return specular;
 	specular = iInfo.material->specular * pow(vr, iInfo.material->specularFallOff) * intensity;
 	return specular;
 }
