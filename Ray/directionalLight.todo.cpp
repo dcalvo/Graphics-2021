@@ -23,9 +23,11 @@ Point3D DirectionalLight::getDiffuse(Ray3D ray, const RayShapeIntersectionInfo& 
 	////////////////////////////////////////////////////
 	// Get the diffuse contribution of the light here //
 	////////////////////////////////////////////////////
+	Point3D diffuse;
 	const Point3D intensity = _diffuse;
 	const Point3D dirTowardsLight = -_direction;
-	const Point3D diffuse = iInfo.material->diffuse * iInfo.normal.dot(dirTowardsLight) * intensity;
+	if (iInfo.normal.dot(dirTowardsLight) < 0) return diffuse;
+	diffuse = iInfo.material->diffuse * iInfo.normal.dot(dirTowardsLight) * intensity;
 	return diffuse;
 }
 
@@ -33,11 +35,13 @@ Point3D DirectionalLight::getSpecular(Ray3D ray, const RayShapeIntersectionInfo&
 	/////////////////////////////////////////////////////
 	// Get the specular contribution of the light here //
 	/////////////////////////////////////////////////////
+	Point3D specular;
 	const Point3D intensity = _specular;
 	const Point3D dirTowardsLight = -_direction;
+	if (iInfo.normal.dot(dirTowardsLight) < 0) return specular;
 	const Point3D r = (dirTowardsLight - 2 * (iInfo.normal.dot(dirTowardsLight) * iInfo.normal)).unit();
 	const double vr = std::clamp(ray.direction.dot(r), 0., 1.);
-	const Point3D specular = iInfo.material->specular * pow(vr, iInfo.material->specularFallOff) * intensity;
+	specular = iInfo.material->specular * pow(vr, iInfo.material->specularFallOff) * intensity;
 	return specular;
 }
 

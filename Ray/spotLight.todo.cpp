@@ -20,9 +20,11 @@ Point3D SpotLight::getDiffuse(Ray3D ray, const RayShapeIntersectionInfo& iInfo) 
 	////////////////////////////////////////////////////
 	// Get the diffuse contribution of the light here //
 	////////////////////////////////////////////////////
+	Point3D diffuse;
 	const Point3D intensity = getIntensity(_diffuse, iInfo);
 	const Point3D dirTowardsLight = (_location - iInfo.position).unit();
-	const Point3D diffuse = iInfo.material->diffuse * iInfo.normal.dot(dirTowardsLight) * intensity;
+	if (iInfo.normal.dot(dirTowardsLight) < 0) return diffuse;
+	diffuse = iInfo.material->diffuse * iInfo.normal.dot(dirTowardsLight) * intensity;
 	return diffuse;
 }
 
@@ -30,11 +32,13 @@ Point3D SpotLight::getSpecular(Ray3D ray, const RayShapeIntersectionInfo& iInfo)
 	/////////////////////////////////////////////////////
 	// Get the specular contribution of the light here //
 	/////////////////////////////////////////////////////
+	Point3D specular;
 	const Point3D intensity = getIntensity(_specular, iInfo);
 	const Point3D dirTowardsLight = (_location - iInfo.position).unit();
+	if (iInfo.normal.dot(dirTowardsLight) < 0) return specular;
 	const Point3D r = (dirTowardsLight - 2 * (iInfo.normal.dot(dirTowardsLight) * iInfo.normal)).unit();
 	const double vr = std::clamp(ray.direction.dot(r), 0., 1.);
-	const Point3D specular = iInfo.material->specular * pow(vr, iInfo.material->specularFallOff) * intensity;
+	specular = iInfo.material->specular * pow(vr, iInfo.material->specularFallOff) * intensity;
 	return specular;
 }
 
