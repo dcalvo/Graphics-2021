@@ -148,9 +148,8 @@ void AffineShape::updateBoundingBox(void) {
 	// Set the _bBox object here //
 	///////////////////////////////
 	_shape->updateBoundingBox();
-	const Matrix4D globalToLocal = getInverseMatrix();
-	// TODO: maybe inverse maybe not?
-	_bBox = ShapeBoundingBox(globalToLocal.inverse() * _shape->boundingBox());
+	const Matrix4D localToGlobal = getMatrix();
+	_bBox = ShapeBoundingBox(localToGlobal * _shape->boundingBox());
 }
 
 void AffineShape::drawOpenGL(GLSLProgram* glslProgram) const {

@@ -46,10 +46,13 @@ void Triangle::updateBoundingBox(void) {
 	const double min_x = std::min(p1[0], std::min(p2[0], p3[0]));
 	const double min_y = std::min(p1[1], std::min(p2[1], p3[1]));
 	const double min_z = std::min(p1[2], std::min(p2[2], p3[2]));
-	const double max_x = std::max(p1[0], std::max(p2[0], p3[0]));
-	const double max_y = std::max(p1[1], std::max(p2[1], p3[1]));
-	const double max_z = std::max(p1[2], std::max(p2[2], p3[2]));
-	const Point3D min_p(min_x, min_y, min_z), max_p(max_x + Epsilon, max_y + Epsilon, max_z + Epsilon);
+	double max_x = std::max(p1[0], std::max(p2[0], p3[0]));
+	double max_y = std::max(p1[1], std::max(p2[1], p3[1]));
+	double max_z = std::max(p1[2], std::max(p2[2], p3[2]));
+	if (max_x - min_x < Epsilon) max_x += Epsilon;
+	if (max_y - min_y < Epsilon) max_y += Epsilon;
+	if (max_z - min_z < Epsilon) max_z += Epsilon;
+	const Point3D min_p(min_x, min_y, min_z), max_p(max_x, max_y, max_z);
 	_bBox = ShapeBoundingBox(BoundingBox3D(min_p, max_p));
 }
 
