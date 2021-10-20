@@ -27,6 +27,14 @@ void Triangle::init(const LocalSceneData& data) {
 	const Plane3D plane(p1, p2, p3);
 	_plane = plane;
 
+	// Calculate intersection polynomial
+	Polynomial3D<1> P;
+	P.coefficient(1u, 0u, 0u) = _plane.normal[0];
+	P.coefficient(0u, 1u, 0u) = _plane.normal[1];
+	P.coefficient(0u, 0u, 1u) = _plane.normal[2];
+	P.coefficient(0u, 0u, 0u) = _plane.distance;
+	_P = P;
+
 	// Compute what we can for barycentric coordinates
 	const Point3D v0 = _v[1]->position - _v[0]->position;
 	const Point3D v1 = _v[2]->position - _v[0]->position;
@@ -73,22 +81,25 @@ double Triangle::intersect(Ray3D ray, RayShapeIntersectionInfo& iInfo, BoundingB
 	/////////////////////////////////////////////////////////////
 	// Compute the intersection of the shape with the ray here //
 	/////////////////////////////////////////////////////////////
-	if (abs(ray.direction.dot(_plane.normal)) < Epsilon) return Infinity;
-	auto p1 = _v[0];
-	auto p2 = _v[1];
-	auto p3 = _v[2];
-	const double t = -(ray.position - p1->position).dot(_plane.normal) / ray.direction.dot(_plane.normal);
+	const Polynomial1D<1> p2 = _P(ray);
+	double roots[1];
+	const unsigned int root_num = p2.roots(roots);
+	if (!root_num) return Infinity;
+	const double t = roots[0];
+	const auto v1 = _v[0];
+	const auto v2 = _v[1];
+	const auto v3 = _v[2];
 	if (!range.isInside(t)) return Infinity;
 	const Point3D p = ray(t); // point of intersection with the plane
 	const auto [alpha, beta, gamma] = barycentricCoordinates(p);
 	if (alpha < 0 || beta < 0 || gamma < 0) return Infinity;
 	iInfo.position = p;
-	iInfo.normal = (alpha * p1->normal + beta * p2->normal + gamma * p3->normal).unit();
-	iInfo.texture = (alpha * p1->texCoordinate + beta * p2->texCoordinate + gamma * p3->texCoordinate);
+	iInfo.normal = (alpha * v1->normal + beta * v2->normal + gamma * v3->normal).unit();
+	iInfo.texture = (alpha * v1->texCoordinate + beta * v2->texCoordinate + gamma * v3->texCoordinate);
 	return t;
 }
 
-std::tuple<double, double, double> Triangle::barycentricCoordinates(Point3D intersection) const {
+std::tuple<double, double, double> Triangle::barycentricCoordinates(const Point3D& intersection) const {
 	// Compute barycentric coordinates using Christer Ericson's Real-Time Collision Detection algorithm
 	const Point3D p = intersection - _v[0]->position; // center to origin
 	const double d20 = p.dot(_v[1]->position - _v[0]->position);

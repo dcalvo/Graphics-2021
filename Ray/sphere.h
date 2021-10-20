@@ -21,6 +21,7 @@ namespace Ray {
 
 		/** The polynomial used to calculate intersection with a ray */
 		Util::Polynomial3D<2> _P;
+
 	public:
 		/** The center of the sphere */
 		Util::Point3D center;

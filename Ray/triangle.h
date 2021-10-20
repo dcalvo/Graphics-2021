@@ -44,6 +44,9 @@ namespace Ray {
 		double _d11; // v1 dot v1
 		double _denom; // _d00 * _d11 - _d01 * _d01
 
+		/** Polynomial used for planar intersection test */
+		Util::Polynomial3D<1> _P;
+
 	public:
 		/** This static method returns the directive describing the shape. */
 		static std::string Directive(void) { return "shape_triangle"; }
@@ -65,7 +68,7 @@ namespace Ray {
 		double intersect(Util::Ray3D ray, class RayShapeIntersectionInfo& iInfo,
 		                 Util::BoundingBox1D range = Util::BoundingBox1D(Util::Epsilon, Util::Infinity),
 		                 std::function<bool (double)> validityFunction = [](double t) { return true; }) const override;
-		std::tuple<double, double, double> barycentricCoordinates(Util::Point3D intersection) const;
+		std::tuple<double, double, double> barycentricCoordinates(const Util::Point3D& intersection) const;
 		bool isInside(Util::Point3D p) const override;
 		void addTrianglesOpenGL(std::vector<TriangleIndex>& triangles) override;
 		void drawOpenGL(GLSLProgram* glslProgram) const override;
