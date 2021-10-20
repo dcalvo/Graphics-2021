@@ -57,20 +57,17 @@ namespace Util {
 		// Compute the intersection of a BoundingBox with a Ray here //
 		///////////////////////////////////////////////////////////////
 		const Point<Dim> bmin = _p[0], bmax = _p[1];
-		double t1[Dim], t2[Dim];
 		Point<Dim> inv_dir;
 		for (int i = 0; i < Dim; i++)
 			inv_dir[i] = 1 / ray.direction[i];
 		// adapted from https://tavianator.com/2011/ray_box.html
-		t1[0] = (bmin[0] - ray.position[0]) * inv_dir[0];
-		t2[0] = (bmax[0] - ray.position[0]) * inv_dir[0];
-		double tmin = std::min(t1[0], t2[0]);
-		double tmax = std::max(t1[0], t2[0]);
-		for (int i = 1; i < Dim; i++) {
-			t1[i] = (bmin[i] - ray.position[i]) * inv_dir[i];
-			t2[i] = (bmax[i] - ray.position[i]) * inv_dir[i];
-			tmin = std::max(tmin, std::min(t1[i], t2[i]));
-			tmax = std::min(tmax, std::max(t1[i], t2[i]));
+		double tmin = -Infinity;
+		double tmax = Infinity;
+		for (int i = 0; i < Dim; i++) {
+			const double t1 = (bmin[i] - ray.position[i]) * inv_dir[i];
+			const double t2 = (bmax[i] - ray.position[i]) * inv_dir[i];
+			tmin = std::max(tmin, std::min(t1, t2));
+			tmax = std::min(tmax, std::max(t1, t2));
 		}
 		auto miss = BoundingBox1D();
 		miss[0] = Infinity, miss[1] = -Infinity; // BoundingBox constructor would order these, so do it manually
