@@ -19,9 +19,12 @@ bool Scene::Refract(Point3D v, Point3D n, double ir, Point3D& refract) {
 	//////////////////
 	// Refract here //
 	//////////////////
+	double i_factor = 1 / ir;
 	// if v.dot(n) > 0, then we're leaving the object
-	const double i_factor = v.dot(n) > 0 ? ir : 1. / ir;
-	//const double i_factor = 1;
+	if (v.dot(n) > 0) {
+		i_factor = ir; // air index is 1
+		n = -n; // flip n so the rest of the calculation still works
+	}
 	const double cos_t = abs(v.dot(n));
 	const double radicand = 1 - (i_factor * i_factor) * (1 - (cos_t * cos_t));
 	if (radicand < 0) return false;
