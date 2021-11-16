@@ -36,42 +36,56 @@ void Camera::drawOpenGL(void) const {
 	Point3D center(position + forward);
 	gluLookAt(position[0], position[1], position[2],
 	          center[0], center[1], center[2],
-	          0.0, 1.0, 0.0);
+	          up[0], up[1], up[2]);
 	// Sanity check to make sure that OpenGL state is good
 	ASSERT_OPEN_GL_STATE();
+}
+
+// Helper function to rotate vector an angle about an axis
+Point3D rotateVector(const Point3D& vector, const Point3D& axis, const float angle) {
+	// adapted from https://en.wikipedia.org/wiki/Rotation_matrix#Rotation_matrix_from_axis_and_angle
+	const float sin_theta = sin(angle);
+	const float cos_theta = cos(angle);
+	Point3D rotated_vector = vector * cos_theta + Point3D::CrossProduct(axis, vector) * sin_theta + axis.dot(vector) *
+		axis * (1 - cos_theta);
+	return rotated_vector;
 }
 
 void Camera::rotateUp(Point3D center, float angle) {
 	///////////////////////////////////////////////////
 	// Rotate the camera about the up direction here //
 	///////////////////////////////////////////////////
-	THROW("method undefined");
+	position = rotateVector(position, up, angle);
+	forward = rotateVector(forward, up, angle);
+	right = rotateVector(right, up, angle);
 }
 
 void Camera::rotateRight(Point3D center, float angle) {
 	//////////////////////////////////////////////////////
 	// Rotate the camera about the right direction here //
 	//////////////////////////////////////////////////////
-	THROW("method undefined");
+	position = rotateVector(position, right, angle);
+	forward = rotateVector(forward, right, angle);
+	up = rotateVector(up, right, angle);
 }
 
 void Camera::moveForward(float dist) {
 	//////////////////////////////////
 	// Move the camera forward here //
 	//////////////////////////////////
-	THROW("method undefined");
+	position += forward * dist;
 }
 
 void Camera::moveRight(float dist) {
 	///////////////////////////////////////
 	// Move the camera to the right here //
 	///////////////////////////////////////
-	THROW("method undefined");
+	position += right * dist;
 }
 
 void Camera::moveUp(float dist) {
 	/////////////////////////////
 	// Move the camera up here //
 	/////////////////////////////
-	THROW("method undefined");
+	position += up * dist;
 }
