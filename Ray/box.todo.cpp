@@ -139,7 +139,7 @@ void Box::drawOpenGL(GLSLProgram* glslProgram) const {
 	//////////////////////////////
 	// Do OpenGL rendering here //
 	//////////////////////////////
-	//_material->drawOpenGL(glslProgram);
+	_material->drawOpenGL(glslProgram);
 	for (const auto& mesh_triangle : mesh) {
 		const auto v0 = mesh_triangle[0];
 		const auto v1 = mesh_triangle[1];

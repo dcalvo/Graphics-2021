@@ -146,6 +146,9 @@ namespace Ray {
 		/** The base directory */
 		static std::string BaseDir;
 
+		/** The number of anti-aliasing samples to take */
+		static unsigned int aa_samples;
+
 		/** This function reflects the vector v about the normal n. */
 		static Util::Point3D Reflect(Util::Point3D v, Util::Point3D n);
 

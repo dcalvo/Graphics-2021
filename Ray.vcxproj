@@ -52,6 +52,7 @@
     <ClCompile Include="Ray\window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="jitters.h" />
     <ClInclude Include="Ray\box.h" />
     <ClInclude Include="Ray\camera.h" />
     <ClInclude Include="Ray\cone.h" />
