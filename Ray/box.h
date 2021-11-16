@@ -3,16 +3,14 @@
 #include <Util/geometry.h>
 #include "shape.h"
 
-namespace Ray
-{
+namespace Ray {
 	/** This class represents a box and is defined by its center and the length of the sides. */
-	class Box : public Shape
-	{
+	class Box : public Shape {
 		/** The index of the material associated with the box */
 		int _materialIndex;
 
 		/** The material associated with the box */
-		const class Material *_material;
+		const class Material* _material;
 	public:
 		/** The center of the box */
 		Util::Point3D center;
@@ -20,28 +18,32 @@ namespace Ray
 		/** The lengths of the sides of the box */
 		Util::Point3D length;
 
+		/** The mesh of the box */
+		std::vector<MeshTriangle> mesh;
+
 		/** This static method returns the directive describing the shape. */
-		static std::string Directive( void ){ return "shape_box"; }
+		static std::string Directive(void) { return "shape_box"; }
 
 		/** The default constructor */
-		Box( void );
+		Box(void);
 
 		///////////////////
 		// Shape methods //
 		///////////////////
 	private:
-		void _write( std::ostream &stream ) const;
-		void _read( std::istream &stream );
+		void _write(std::ostream& stream) const override;
+		void _read(std::istream& stream) override;
 	public:
-		std::string name( void ) const { return "box"; }
-		void init( const class LocalSceneData& data  );
-		void initOpenGL( void );
-		void updateBoundingBox( void );
-		double intersect( Util::Ray3D ray , class RayShapeIntersectionInfo &iInfo , Util::BoundingBox1D range = Util::BoundingBox1D( Util::Epsilon , Util::Infinity ) , std::function< bool (double) > validityFunction = [] ( double t ){ return true; } ) const;
-		bool isInside( Util::Point3D p ) const;
-		void drawOpenGL( GLSLProgram *glslProgram ) const;
-		size_t primitiveNum( void ) const;
+		std::string name(void) const override { return "box"; }
+		void init(const class LocalSceneData& data) override;
+		void initOpenGL(void) override;
+		void updateBoundingBox(void) override;
+		double intersect(Util::Ray3D ray, class RayShapeIntersectionInfo& iInfo,
+		                 Util::BoundingBox1D range = Util::BoundingBox1D(Util::Epsilon, Util::Infinity),
+		                 std::function<bool (double)> validityFunction = [](double t) { return true; }) const override;
+		bool isInside(Util::Point3D p) const override;
+		void drawOpenGL(GLSLProgram* glslProgram) const override;
+		size_t primitiveNum(void) const override;
 	};
 }
 #endif // BOX_INCLUDED
-
