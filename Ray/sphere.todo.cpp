@@ -2,6 +2,7 @@
 #include <Util/exceptions.h>
 #include "scene.h"
 #include "sphere.h"
+#include "triangle.h"
 
 using namespace Ray;
 using namespace Util;
@@ -43,8 +44,8 @@ void Sphere::initOpenGL(void) {
 	const double stack_step = Pi / stack_count;
 	const double sector_step = 2 * Pi / sector_count;
 	const double inverse_radius = 1. / radius;
-	std::vector<Vertex*> vertices;
 	// generate vertices
+	std::vector<Vertex*> vertices;
 	for (int i = 0; i <= stack_count; i++) {
 		const double stack_angle = Pi / 2 - i * stack_step;
 		const double xy = radius * cos(stack_angle);
@@ -86,18 +87,11 @@ void Sphere::initOpenGL(void) {
 		int k2 = k1 + sector_count + 1;
 		for (int j = 0; j < sector_count; j++, k1++, k2++) {
 			// visit k1 -> k2 -> k1+1
-			if (i) {
-				MeshTriangle mesh_triangle(vertices[k1], vertices[k2], vertices[k1 + 1]);
-				mesh.push_back(mesh_triangle);
-			}
+			if (i) mesh.emplace_back(vertices[k1], vertices[k2], vertices[k1 + 1]);
 			// visit k1+1 -> k2 -> k2+1
-			if (i != (stack_count - 1)) {
-				MeshTriangle mesh_triangle(vertices[k1 + 1], vertices[k2], vertices[k2 + 1]);
-				mesh.push_back(mesh_triangle);
-			}
+			if (i != (stack_count - 1)) mesh.emplace_back(vertices[k1 + 1], vertices[k2], vertices[k2 + 1]);
 		}
 	}
-
 	// Sanity check to make sure that OpenGL state is good
 	ASSERT_OPEN_GL_STATE();
 }
@@ -148,15 +142,15 @@ void Sphere::drawOpenGL(GLSLProgram* glslProgram) const {
 
 		glBegin(GL_TRIANGLES);
 
-		//glTexCoord3d(v0->texCoordinate[0], v0->texCoordinate[1], v0->texCoordinate[2]);
+		glTexCoord3d(v0->texCoordinate[0], v0->texCoordinate[1], v0->texCoordinate[2]);
 		glNormal3d(v0->normal[0], v0->normal[1], v0->normal[2]);
 		glVertex3d(v0->position[0], v0->position[1], v0->position[2]);
 
-		//glTexCoord3d(v1->texCoordinate[0], v1->texCoordinate[1], v1->texCoordinate[2]);
+		glTexCoord3d(v1->texCoordinate[0], v1->texCoordinate[1], v1->texCoordinate[2]);
 		glNormal3d(v1->normal[0], v1->normal[1], v1->normal[2]);
 		glVertex3d(v1->position[0], v1->position[1], v1->position[2]);
 
-		//glTexCoord3d(v2->texCoordinate[0], v2->texCoordinate[1], v2->texCoordinate[2]);
+		glTexCoord3d(v2->texCoordinate[0], v2->texCoordinate[1], v2->texCoordinate[2]);
 		glNormal3d(v2->normal[0], v2->normal[1], v2->normal[2]);
 		glVertex3d(v2->position[0], v2->position[1], v2->position[2]);
 

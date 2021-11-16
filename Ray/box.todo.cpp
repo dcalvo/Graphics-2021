@@ -50,6 +50,10 @@ void Box::initOpenGL(void) {
 	v3->position = center + (Point3D(1., 1., -1.) * length);
 	v4->position = center + (Point3D(1., 1., 1.) * length);
 	v1->normal = v2->normal = v3->normal = v4->normal = Point3D(0., 1., 0.);
+	v1->texCoordinate = Point2D(0, 0);
+	v2->texCoordinate = Point2D(0, 1);
+	v3->texCoordinate = Point2D(1, 0);
+	v4->texCoordinate = Point2D(1, 1);
 	mesh.emplace_back(v1, v2, v3);
 	mesh.emplace_back(v3, v2, v4);
 	// bottom face
@@ -62,6 +66,10 @@ void Box::initOpenGL(void) {
 	v7->position = center + (Point3D(1., -1., -1.) * length);
 	v8->position = center + (Point3D(1., -1., 1.) * length);
 	v5->normal = v6->normal = v7->normal = v8->normal = Point3D(0., -1., 0.);
+	v5->texCoordinate = Point2D(0, 0);
+	v6->texCoordinate = Point2D(0, 1);
+	v7->texCoordinate = Point2D(1, 0);
+	v8->texCoordinate = Point2D(1, 1);
 	mesh.emplace_back(v5, v7, v6); // invert order on negative faces
 	mesh.emplace_back(v7, v8, v6); // invert order on negative faces
 	// front face
@@ -74,6 +82,10 @@ void Box::initOpenGL(void) {
 	v11->position = center + (Point3D(1., 1., 1.) * length);
 	v12->position = center + (Point3D(1., -1., 1.) * length);
 	v9->normal = v10->normal = v11->normal = v12->normal = Point3D(0., 0., 1.);
+	v9->texCoordinate = Point2D(0, 0);
+	v10->texCoordinate = Point2D(0, 1);
+	v11->texCoordinate = Point2D(1, 0);
+	v12->texCoordinate = Point2D(1, 1);
 	mesh.emplace_back(v9, v10, v11);
 	mesh.emplace_back(v11, v10, v12);
 	// back face
@@ -86,6 +98,10 @@ void Box::initOpenGL(void) {
 	v15->position = center + (Point3D(1., 1., -1.) * length);
 	v16->position = center + (Point3D(1., -1., -1.) * length);
 	v13->normal = v14->normal = v15->normal = v16->normal = Point3D(0., 0., -1.);
+	v13->texCoordinate = Point2D(0, 0);
+	v14->texCoordinate = Point2D(0, 1);
+	v15->texCoordinate = Point2D(1, 0);
+	v16->texCoordinate = Point2D(1, 1);
 	mesh.emplace_back(v13, v15, v14); // invert order on negative faces
 	mesh.emplace_back(v15, v16, v14); // invert order on negative faces
 	// right face
@@ -98,6 +114,10 @@ void Box::initOpenGL(void) {
 	v19->position = center + (Point3D(1., 1., 1.) * length);
 	v20->position = center + (Point3D(1., -1., 1.) * length);
 	v17->normal = v18->normal = v19->normal = v20->normal = Point3D(1., 0., 0.);
+	v17->texCoordinate = Point2D(0, 0);
+	v18->texCoordinate = Point2D(0, 1);
+	v19->texCoordinate = Point2D(1, 0);
+	v20->texCoordinate = Point2D(1, 1);
 	mesh.emplace_back(v17, v19, v18); // invert order on negative faces (x is flipped)
 	mesh.emplace_back(v19, v20, v18); // invert order on negative faces (x is flipped)
 	// left face
@@ -110,6 +130,10 @@ void Box::initOpenGL(void) {
 	v23->position = center + (Point3D(-1., 1., 1.) * length);
 	v24->position = center + (Point3D(-1., -1., 1.) * length);
 	v21->normal = v22->normal = v23->normal = v24->normal = Point3D(-1., 0., 0.);
+	v21->texCoordinate = Point2D(0, 0);
+	v22->texCoordinate = Point2D(0, 1);
+	v23->texCoordinate = Point2D(1, 0);
+	v24->texCoordinate = Point2D(1, 1);
 	mesh.emplace_back(v21, v22, v23);
 	mesh.emplace_back(v23, v22, v24);
 	// Sanity check to make sure that OpenGL state is good
@@ -147,15 +171,15 @@ void Box::drawOpenGL(GLSLProgram* glslProgram) const {
 
 		glBegin(GL_TRIANGLES);
 
-		//glTexCoord3d(v0->texCoordinate[0], v0->texCoordinate[1], v0->texCoordinate[2]);
+		glTexCoord3d(v0->texCoordinate[0], v0->texCoordinate[1], v0->texCoordinate[2]);
 		glNormal3d(v0->normal[0], v0->normal[1], v0->normal[2]);
 		glVertex3d(v0->position[0], v0->position[1], v0->position[2]);
 
-		//glTexCoord3d(v1->texCoordinate[0], v1->texCoordinate[1], v1->texCoordinate[2]);
+		glTexCoord3d(v1->texCoordinate[0], v1->texCoordinate[1], v1->texCoordinate[2]);
 		glNormal3d(v1->normal[0], v1->normal[1], v1->normal[2]);
 		glVertex3d(v1->position[0], v1->position[1], v1->position[2]);
 
-		//glTexCoord3d(v2->texCoordinate[0], v2->texCoordinate[1], v2->texCoordinate[2]);
+		glTexCoord3d(v2->texCoordinate[0], v2->texCoordinate[1], v2->texCoordinate[2]);
 		glNormal3d(v2->normal[0], v2->normal[1], v2->normal[2]);
 		glVertex3d(v2->position[0], v2->position[1], v2->position[2]);
 
