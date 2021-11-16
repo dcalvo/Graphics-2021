@@ -3,6 +3,7 @@
 #include <Util/geometry.h>
 #include <Util/polynomial.h>
 #include "shape.h"
+#include "triangle.h"
 
 namespace Ray {
 	/** This class describes a sphere, and is represented by its center and radius. */
@@ -28,7 +29,7 @@ namespace Ray {
 		/** The radius of the sphere */
 		double radius;
 		/** The mesh of the sphere */
-		std::vector<MeshTriangle> mesh;
+		std::vector<Triangle> mesh;
 
 		/** This static method returns the directive describing the shape. */
 		static std::string Directive(void) { return "shape_sphere"; }

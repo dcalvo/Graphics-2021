@@ -164,27 +164,7 @@ void Box::drawOpenGL(GLSLProgram* glslProgram) const {
 	// Do OpenGL rendering here //
 	//////////////////////////////
 	_material->drawOpenGL(glslProgram);
-	for (const auto& mesh_triangle : mesh) {
-		const auto v0 = mesh_triangle[0];
-		const auto v1 = mesh_triangle[1];
-		const auto v2 = mesh_triangle[2];
-
-		glBegin(GL_TRIANGLES);
-
-		glTexCoord3d(v0->texCoordinate[0], v0->texCoordinate[1], v0->texCoordinate[2]);
-		glNormal3d(v0->normal[0], v0->normal[1], v0->normal[2]);
-		glVertex3d(v0->position[0], v0->position[1], v0->position[2]);
-
-		glTexCoord3d(v1->texCoordinate[0], v1->texCoordinate[1], v1->texCoordinate[2]);
-		glNormal3d(v1->normal[0], v1->normal[1], v1->normal[2]);
-		glVertex3d(v1->position[0], v1->position[1], v1->position[2]);
-
-		glTexCoord3d(v2->texCoordinate[0], v2->texCoordinate[1], v2->texCoordinate[2]);
-		glNormal3d(v2->normal[0], v2->normal[1], v2->normal[2]);
-		glVertex3d(v2->position[0], v2->position[1], v2->position[2]);
-
-		glEnd();
-	}
+	for (const auto& triangle : mesh) triangle.drawOpenGL(glslProgram);
 	// Sanity check to make sure that OpenGL state is good
 	ASSERT_OPEN_GL_STATE();
 }

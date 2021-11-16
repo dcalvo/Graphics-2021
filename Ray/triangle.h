@@ -54,6 +54,9 @@ namespace Ray {
 		/** The default constructor */
 		Triangle(void);
 
+		/** The constructor for openGL objects */
+		Triangle(Vertex* v0, Vertex* v1, Vertex* v2);
+
 		///////////////////
 		// Shape methods //
 		///////////////////

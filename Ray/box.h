@@ -2,6 +2,7 @@
 #define BOX_INCLUDED
 #include <Util/geometry.h>
 #include "shape.h"
+#include "triangle.h"
 
 namespace Ray {
 	/** This class represents a box and is defined by its center and the length of the sides. */
@@ -19,7 +20,7 @@ namespace Ray {
 		Util::Point3D length;
 
 		/** The mesh of the box */
-		std::vector<MeshTriangle> mesh;
+		std::vector<Triangle> mesh;
 
 		/** This static method returns the directive describing the shape. */
 		static std::string Directive(void) { return "shape_box"; }
