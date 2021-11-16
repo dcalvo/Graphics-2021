@@ -92,7 +92,7 @@ void PointLight::drawOpenGL(int index, GLSLProgram* glslProgram) const {
 	glLightfv(GL_LIGHT0 + index, GL_AMBIENT, ambient_param);
 	glLightfv(GL_LIGHT0 + index, GL_DIFFUSE, diffuse_param);
 	glLightfv(GL_LIGHT0 + index, GL_SPECULAR, specular_param);
-	glLightfv(GL_LIGHT0 + index, GL_AMBIENT, position_param);
+	glLightfv(GL_LIGHT0 + index, GL_POSITION, position_param);
 	glLightf(GL_LIGHT0 + index, GL_CONSTANT_ATTENUATION, _constAtten);
 	glLightf(GL_LIGHT0 + index, GL_LINEAR_ATTENUATION, _linearAtten);
 	glLightf(GL_LIGHT0 + index, GL_QUADRATIC_ATTENUATION, _quadAtten);

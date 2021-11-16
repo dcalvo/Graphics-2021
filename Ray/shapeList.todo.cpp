@@ -100,7 +100,6 @@ void ShapeList::initOpenGL(void) {
 	///////////////////////////
 	// Do OpenGL set-up here //
 	///////////////////////////
-	WARN_ONCE("remainder of method undefined");
 }
 
 void ShapeList::drawOpenGL(GLSLProgram* glslProgram) const {
@@ -161,9 +160,14 @@ void AffineShape::drawOpenGL(GLSLProgram* glslProgram) const {
 	//////////////////////////////
 	// Do OpenGL rendering here //
 	//////////////////////////////
-	WARN_ONCE("method undefined");
+	const Matrix4D localToGlobal = getMatrix();
+	std::vector<double> m;
+	for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) m.push_back(localToGlobal(j, i));
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glMultMatrixd(m.data());
 	_shape->drawOpenGL(glslProgram);
-
+	glPopMatrix();
 	// Sanity check to make sure that OpenGL state is good
 	ASSERT_OPEN_GL_STATE();
 }
@@ -184,8 +188,8 @@ double TriangleList::intersect(Ray3D ray, RayShapeIntersectionInfo& iInfo, Bound
 }
 
 void TriangleList::drawOpenGL(GLSLProgram* glslProgram) const {
-#ifdef NEW_SHADER_CODE
 	_material->drawOpenGL(glslProgram);
+#ifdef NEW_SHADER_CODE
 	if (glslProgram) {
 		static bool firstTime = true;
 		GLdouble modelview[16];
@@ -289,7 +293,6 @@ void TriangleList::initOpenGL(void) {
 	///////////////////////////
 	// Do OpenGL set-up here //
 	///////////////////////////
-	WARN_ONCE("method undefined");
 
 	// Sanity check to make sure that OpenGL state is good
 	ASSERT_OPEN_GL_STATE();

@@ -89,15 +89,17 @@ void SpotLight::drawOpenGL(int index, GLSLProgram* glslProgram) const {
 	const float diffuse_param[4] = {_diffuse[0], _diffuse[1], _diffuse[2], 1.};
 	const float specular_param[4] = {_specular[0], _specular[1], _specular[2], 1.};
 	const float position_param[4] = {_location[0], _location[1], _location[2], 1.};
+	const float direction_param[3] = {_direction[0], _direction[1], _direction[2]};
 
 	glLightfv(GL_LIGHT0 + index, GL_AMBIENT, ambient_param);
 	glLightfv(GL_LIGHT0 + index, GL_DIFFUSE, diffuse_param);
 	glLightfv(GL_LIGHT0 + index, GL_SPECULAR, specular_param);
-	glLightfv(GL_LIGHT0 + index, GL_AMBIENT, position_param);
+	glLightfv(GL_LIGHT0 + index, GL_POSITION, position_param);
+	glLightfv(GL_LIGHT0 + index, GL_SPOT_DIRECTION, direction_param);
 	glLightf(GL_LIGHT0 + index, GL_CONSTANT_ATTENUATION, _constAtten);
 	glLightf(GL_LIGHT0 + index, GL_LINEAR_ATTENUATION, _linearAtten);
 	glLightf(GL_LIGHT0 + index, GL_QUADRATIC_ATTENUATION, _quadAtten);
-	glLightf(GL_LIGHT0 + index, GL_SPOT_CUTOFF, _cutOffAngle / (Pi / 2) * 90);
+	glLightf(GL_LIGHT0 + index, GL_SPOT_CUTOFF, _cutOffAngle * 180 / Pi);
 	glLightf(GL_LIGHT0 + index, GL_SPOT_EXPONENT, _dropOffRate);
 
 	glEnable(GL_LIGHT0 + index);

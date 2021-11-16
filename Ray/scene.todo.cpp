@@ -121,6 +121,7 @@ void Material::drawOpenGL(GLSLProgram* glslProgram) const {
 	glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_param);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse_param);
 	glMaterialfv(GL_FRONT, GL_SPECULAR, specular_param);
+	glMaterialf(GL_FRONT, GL_SHININESS, specularFallOff);
 
 	if (tex) {
 		glBindTexture(GL_TEXTURE_2D, tex->_openGLHandle);
@@ -140,9 +141,22 @@ void Material::drawOpenGL(GLSLProgram* glslProgram) const {
 void Texture::initOpenGL(void) {
 	///////////////////////////////////
 	// Do OpenGL texture set-up here //
-	///////////////////////////////////
-	//THROW("method undefined");
-
+	/////////////////////////////////////
+	std::vector<unsigned char> flattened_img;
+	const int height = _image.height();
+	const int width = _image.width();
+	for (int i = 0; i < height; i++)
+		for (int j = 0; j < width; j++) {
+			const Image::Pixel32 pix = _image(i, j);
+			flattened_img.push_back(pix.r);
+			flattened_img.push_back(pix.g);
+			flattened_img.push_back(pix.b);
+			flattened_img.push_back(pix.a);
+		}
+	glGenTextures(1, &_openGLHandle);
+	glBindTexture(GL_TEXTURE_2D, _openGLHandle);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, flattened_img.data());
+	glBindTexture(GL_TEXTURE_2D, 0);
 	// Sanity check to make sure that OpenGL state is good
 	ASSERT_OPEN_GL_STATE();
 }

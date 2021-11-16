@@ -140,7 +140,8 @@ void Sphere::drawOpenGL(GLSLProgram* glslProgram) const {
 	//////////////////////////////
 	// Do OpenGL rendering here //
 	//////////////////////////////
-	for (const auto mesh_triangle : mesh) {
+	_material->drawOpenGL(glslProgram);
+	for (const auto& mesh_triangle : mesh) {
 		const auto v0 = mesh_triangle[0];
 		const auto v1 = mesh_triangle[1];
 		const auto v2 = mesh_triangle[2];
