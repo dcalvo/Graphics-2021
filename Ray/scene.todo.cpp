@@ -111,7 +111,24 @@ void Material::drawOpenGL(GLSLProgram* glslProgram) const {
 	//////////////////////////////
 	// Do OpenGL rendering here //
 	//////////////////////////////
-	//THROW("method undefined");
+	// RGBA values
+	const float emissive_param[4] = {emissive[0], emissive[1], emissive[2], 1.};
+	const float ambient_param[4] = {ambient[0], ambient[1], ambient[2], 1.};
+	const float diffuse_param[4] = {diffuse[0], diffuse[1], diffuse[2], 1.};
+	const float specular_param[4] = {specular[0], specular[1], specular[2], 1.};
+
+	glMaterialfv(GL_FRONT, GL_EMISSION, emissive_param);
+	glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_param);
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse_param);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, specular_param);
+
+	if (tex) {
+		glBindTexture(GL_TEXTURE_2D, tex->_openGLHandle);
+		glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glEnable(GL_TEXTURE_2D);
+	}
+	else glDisable(GL_TEXTURE_2D);
 
 	// Sanity check to make sure that OpenGL state is good
 	ASSERT_OPEN_GL_STATE();

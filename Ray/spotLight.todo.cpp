@@ -85,8 +85,22 @@ void SpotLight::drawOpenGL(int index, GLSLProgram* glslProgram) const {
 	//////////////////////////////
 	// Do OpenGL rendering here //
 	//////////////////////////////
-	THROW("method undefined");
+	const float ambient_param[4] = {_ambient[0], _ambient[1], _ambient[2], 1.};
+	const float diffuse_param[4] = {_diffuse[0], _diffuse[1], _diffuse[2], 1.};
+	const float specular_param[4] = {_specular[0], _specular[1], _specular[2], 1.};
+	const float position_param[4] = {_location[0], _location[1], _location[2], 1.};
 
+	glLightfv(GL_LIGHT0 + index, GL_AMBIENT, ambient_param);
+	glLightfv(GL_LIGHT0 + index, GL_DIFFUSE, diffuse_param);
+	glLightfv(GL_LIGHT0 + index, GL_SPECULAR, specular_param);
+	glLightfv(GL_LIGHT0 + index, GL_AMBIENT, position_param);
+	glLightf(GL_LIGHT0 + index, GL_CONSTANT_ATTENUATION, _constAtten);
+	glLightf(GL_LIGHT0 + index, GL_LINEAR_ATTENUATION, _linearAtten);
+	glLightf(GL_LIGHT0 + index, GL_QUADRATIC_ATTENUATION, _quadAtten);
+	glLightf(GL_LIGHT0 + index, GL_SPOT_CUTOFF, _cutOffAngle / (Pi / 2) * 90);
+	glLightf(GL_LIGHT0 + index, GL_SPOT_EXPONENT, _dropOffRate);
+
+	glEnable(GL_LIGHT0 + index);
 	// Sanity check to make sure that OpenGL state is good
 	ASSERT_OPEN_GL_STATE();
 }
