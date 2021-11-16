@@ -48,20 +48,10 @@ void Triangle::updateBoundingBox(void) {
 	///////////////////////////////
 	// Set the _bBox object here //
 	///////////////////////////////
-	const Point3D p1 = _v[0]->position;
-	const Point3D p2 = _v[1]->position;
-	const Point3D p3 = _v[2]->position;
-	const double min_x = std::min(p1[0], std::min(p2[0], p3[0]));
-	const double min_y = std::min(p1[1], std::min(p2[1], p3[1]));
-	const double min_z = std::min(p1[2], std::min(p2[2], p3[2]));
-	double max_x = std::max(p1[0], std::max(p2[0], p3[0]));
-	double max_y = std::max(p1[1], std::max(p2[1], p3[1]));
-	double max_z = std::max(p1[2], std::max(p2[2], p3[2]));
-	if (max_x - min_x < Epsilon) max_x += Epsilon;
-	if (max_y - min_y < Epsilon) max_y += Epsilon;
-	if (max_z - min_z < Epsilon) max_z += Epsilon;
-	const Point3D min_p(min_x, min_y, min_z), max_p(max_x, max_y, max_z);
-	_bBox = ShapeBoundingBox(BoundingBox3D(min_p, max_p));
+	Point3D pList[3];
+	for (int i = 0; i < 3; i++) pList[i] = _v[i]->position;
+	_bBox = BoundingBox3D(pList, 3);
+	for (int i = 0; i < 3; i++) _bBox[0][i] -= Epsilon, _bBox[1][i] += Epsilon;
 }
 
 void Triangle::initOpenGL(void) {
@@ -114,7 +104,6 @@ void Triangle::drawOpenGL(GLSLProgram* glslProgram) const {
 	//////////////////////////////
 	// Do OpenGL rendering here //
 	//////////////////////////////
-	THROW("method undefined");
 
 	// Sanity check to make sure that OpenGL state is good
 	ASSERT_OPEN_GL_STATE();

@@ -199,6 +199,11 @@ namespace Ray {
 	class TriangleList : public Shape {
 		friend class Scene;
 
+#ifdef NEW_SHADER_CODE
+		/** The OpenGL vertex array identifier */
+		GLuint _vertexArrayID = 0;
+#endif // NEW_SHADER_CODE
+
 		/** The OpenGL vertex buffer identifier */
 		GLuint _vertexBufferID = 0;
 

@@ -12,7 +12,8 @@ void Difference::updateBoundingBox(void) {
 	///////////////////////////////
 	// Set the _bBox object here //
 	///////////////////////////////
-	THROW("method undefined");
+	_shape0->updateBoundingBox();
+	_bBox = _shape0->boundingBox();
 }
 
 double Difference::intersect(Ray3D ray, class RayShapeIntersectionInfo& iInfo, BoundingBox1D range,
@@ -81,12 +82,15 @@ void ShapeList::updateBoundingBox(void) {
 	///////////////////////////////
 	// Set the _bBox object here //
 	///////////////////////////////
-	BoundingBox3D bBox;
-	for (const auto shape : shapes) {
-		shape->updateBoundingBox();
-		bBox += shape->boundingBox();
+	auto pList = new Point3D[shapes.size() * 2];
+	for (int i = 0; i < shapes.size(); i++) {
+		shapes[i]->updateBoundingBox();
+		_bBox = shapes[i]->boundingBox();
+		pList[2 * i] = _bBox[0];
+		pList[2 * i + 1] = _bBox[1];
 	}
-	_bBox = ShapeBoundingBox(bBox);
+	_bBox = BoundingBox3D(pList, static_cast<int>(shapes.size()) * 2);
+	delete[] pList;
 }
 
 void ShapeList::initOpenGL(void) {
@@ -103,7 +107,9 @@ void ShapeList::drawOpenGL(GLSLProgram* glslProgram) const {
 	//////////////////////////////
 	// Do OpenGL rendering here //
 	//////////////////////////////
-	THROW("method undefined");
+	for (const auto shape : shapes) {
+		shape->drawOpenGL(glslProgram);
+	}
 
 	// Sanity check to make sure that OpenGL state is good
 	ASSERT_OPEN_GL_STATE();
@@ -148,8 +154,7 @@ void AffineShape::updateBoundingBox(void) {
 	// Set the _bBox object here //
 	///////////////////////////////
 	_shape->updateBoundingBox();
-	const Matrix4D localToGlobal = getMatrix();
-	_bBox = ShapeBoundingBox(localToGlobal * _shape->boundingBox());
+	_bBox = getMatrix() * _shape->boundingBox();
 }
 
 void AffineShape::drawOpenGL(GLSLProgram* glslProgram) const {
@@ -179,10 +184,41 @@ double TriangleList::intersect(Ray3D ray, RayShapeIntersectionInfo& iInfo, Bound
 }
 
 void TriangleList::drawOpenGL(GLSLProgram* glslProgram) const {
+#ifdef NEW_SHADER_CODE
+	_material->drawOpenGL(glslProgram);
+	if (glslProgram) {
+		static bool firstTime = true;
+		GLdouble modelview[16];
+		glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
+		glslProgram->setUniformMatrix<4>("modelview", modelview, firstTime);
+		Matrix3D m;
+		for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) m(j, i) = modelview[i * 4 + j];
+		m = m.inverse().transpose();
+		for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) modelview[i * 3 + j] = m(j, i);
+		glslProgram->setUniformMatrix<3>("modelview_inverse_transpose", modelview, firstTime);
+		firstTime = false;
+
+		glBindVertexArray(_vertexArrayID);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _elementBufferID);
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glEnableClientState(GL_NORMAL_ARRAY);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+		glDrawElements(GL_TRIANGLES, 3 * _tNum, GL_UNSIGNED_INT, nullptr);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glDisableClientState(GL_VERTEX_ARRAY);
+		glDisableClientState(GL_NORMAL_ARRAY);
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	}
+#endif // NEW_SHADER_CODE
 	//////////////////////////////
 	// Do OpenGL rendering here //
 	//////////////////////////////
-	THROW("method undefined");
+	for (const auto shape : _shapeList.shapes) {
+		shape->drawOpenGL(glslProgram);
+	}
 
 	// Sanity check to make sure that OpenGL state is good
 	ASSERT_OPEN_GL_STATE();
@@ -208,7 +244,48 @@ void TriangleList::init(const LocalSceneData& data) {
 
 void TriangleList::initOpenGL(void) {
 	_shapeList.initOpenGL();
+#ifdef NEW_SHADER_CODE
 
+	std::vector<TriangleIndex> triangles;
+	_shapeList.addTrianglesOpenGL(triangles);
+	_tNum = static_cast<unsigned>(triangles.size());
+
+	auto vertexData = new GLfloat[_vNum * (3 + 3 + 2)];
+	GLfloat* v = vertexData + _vNum * 0;
+	GLfloat* n = vertexData + _vNum * 3;
+	GLfloat* t = vertexData + _vNum * 6;
+
+	for (int i = 0; i < static_cast<int>(_vNum); i++) {
+		for (int j = 0; j < 3; j++) v[3 * i + j] = static_cast<GLfloat>(_vertices[i].position[j]);
+		for (int j = 0; j < 3; j++) n[3 * i + j] = static_cast<GLfloat>(_vertices[i].normal[j]);
+		for (int j = 0; j < 2; j++) t[2 * i + j] = static_cast<GLfloat>(_vertices[i].texCoordinate[j]);
+	}
+	glGenBuffers(1, &_vertexBufferID);
+	glBindBuffer(GL_ARRAY_BUFFER, _vertexBufferID);
+	glBufferData(GL_ARRAY_BUFFER, 8 * _vNum * sizeof(GLfloat), vertexData, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	delete[] vertexData;
+
+	glGenBuffers(1, &_elementBufferID);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _elementBufferID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, triangles.size() * sizeof(GLuint) * 3, &triangles[0][0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	glGenVertexArrays(1, &_vertexArrayID);
+	glBindVertexArray(_vertexArrayID);
+
+	glEnableVertexAttribArray(0);
+	glBindVertexBuffer(0, _vertexBufferID, 0, sizeof(GLfloat) * 3);
+	glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexAttribBinding(0, 0);
+
+	glEnableVertexAttribArray(1);
+	glBindVertexBuffer(1, _vertexBufferID, sizeof(GLfloat) * 3 * _vNum, sizeof(GLfloat) * 3);
+	glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexAttribBinding(1, 1);
+
+	glBindVertexArray(0);
+#endif // NEW_SHADER_CODE
 	///////////////////////////
 	// Do OpenGL set-up here //
 	///////////////////////////
@@ -243,7 +320,9 @@ void Union::updateBoundingBox(void) {
 	///////////////////////////////
 	// Set the _bBox object here //
 	///////////////////////////////
-	THROW("method undefined");
+	_shapeList.updateBoundingBox();
+	_bBox = _shapeList.shapes[0]->boundingBox();
+	for (int i = 1; i < _shapeList.shapes.size(); i++) _bBox += _shapeList.shapes[i]->boundingBox();
 }
 
 bool Union::isInside(Point3D p) const {
@@ -278,7 +357,9 @@ void Intersection::updateBoundingBox(void) {
 	///////////////////////////////
 	// Set the _bBox object here //
 	///////////////////////////////
-	THROW("method undefined");
+	_shapeList.updateBoundingBox();
+	_bBox = _shapeList.shapes[0]->boundingBox();
+	for (int i = 1; i < _shapeList.shapes.size(); i++) _bBox ^= _shapeList.shapes[i]->boundingBox();
 }
 
 bool Intersection::isInside(Point3D p) const {

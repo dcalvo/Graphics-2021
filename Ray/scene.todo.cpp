@@ -97,10 +97,21 @@ Point3D Scene::getColor(Ray3D ray, int rDepth, Point3D cLimit, unsigned int ligh
 // Material //
 //////////////
 void Material::drawOpenGL(GLSLProgram* glslProgram) const {
+#ifdef NEW_SHADER_CODE
+	if (glslProgram) {
+		static bool firstTime = true;
+		glslProgram->setUniform<3>("material_emissive", &emissive[0], firstTime);
+		glslProgram->setUniform<3>("material_ambient", &ambient[0], firstTime);
+		glslProgram->setUniform<3>("material_diffuse", &diffuse[0], firstTime);
+		glslProgram->setUniform<3>("material_specular", &specular[0], firstTime);
+		glslProgram->setUniform("material_specular_shininess", specularFallOff, firstTime);
+		firstTime = false;
+	}
+#endif // NEW_SHADER_CODE
 	//////////////////////////////
 	// Do OpenGL rendering here //
 	//////////////////////////////
-	THROW("method undefined");
+	//THROW("method undefined");
 
 	// Sanity check to make sure that OpenGL state is good
 	ASSERT_OPEN_GL_STATE();
@@ -113,7 +124,7 @@ void Texture::initOpenGL(void) {
 	///////////////////////////////////
 	// Do OpenGL texture set-up here //
 	///////////////////////////////////
-	THROW("method undefined");
+	//THROW("method undefined");
 
 	// Sanity check to make sure that OpenGL state is good
 	ASSERT_OPEN_GL_STATE();

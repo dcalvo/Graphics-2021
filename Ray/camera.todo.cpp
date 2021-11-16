@@ -31,8 +31,12 @@ void Camera::drawOpenGL(void) const {
 	//////////////////////////////
 	// Do OpenGL rendering here //
 	//////////////////////////////
-	THROW("method undefined");
-
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	Point3D center(position + forward);
+	gluLookAt(position[0], position[1], position[2],
+	          center[0], center[1], center[2],
+	          0.0, 1.0, 0.0);
 	// Sanity check to make sure that OpenGL state is good
 	ASSERT_OPEN_GL_STATE();
 }

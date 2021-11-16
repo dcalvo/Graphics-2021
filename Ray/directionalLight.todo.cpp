@@ -74,10 +74,20 @@ Point3D DirectionalLight::transparency(const RayShapeIntersectionInfo& iInfo, co
 }
 
 void DirectionalLight::drawOpenGL(int index, GLSLProgram* glslProgram) const {
+#ifdef NEW_SHADER_CODE
+	if (glslProgram) {
+		static bool firstTime = true;
+		glslProgram->setUniform<3>("light_ambient", &_ambient[0], firstTime);
+		glslProgram->setUniform<3>("light_diffuse", &_diffuse[0], firstTime);
+		glslProgram->setUniform<3>("light_specular", &_specular[0], firstTime);
+		glslProgram->setUniform<3>("light_direction", &_direction[0], firstTime);
+		firstTime = false;
+	}
+#endif // NEW_SHADER_CODE
 	//////////////////////////////
 	// Do OpenGL rendering here //
 	//////////////////////////////
-	THROW("method undefined");
+	//THROW("method undefined");
 
 	// Sanity check to make sure that OpenGL state is good
 	ASSERT_OPEN_GL_STATE();

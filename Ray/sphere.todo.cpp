@@ -29,8 +29,8 @@ void Sphere::updateBoundingBox(void) {
 	///////////////////////////////
 	// Set the _bBox object here //
 	///////////////////////////////
-	const Point3D radius_v(radius, radius, radius);
-	_bBox = ShapeBoundingBox(BoundingBox3D(center - radius_v, center + radius_v));
+	Point3D p(radius, radius, radius);
+	_bBox = BoundingBox3D(center - p, center + p);
 }
 
 void Sphere::initOpenGL(void) {
@@ -81,7 +81,7 @@ void Sphere::drawOpenGL(GLSLProgram* glslProgram) const {
 	//////////////////////////////
 	// Do OpenGL rendering here //
 	//////////////////////////////
-	THROW("method undefined");
+
 
 	// Sanity check to make sure that OpenGL state is good
 	ASSERT_OPEN_GL_STATE();

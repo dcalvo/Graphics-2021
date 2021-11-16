@@ -16,6 +16,8 @@
 #include <Util/exceptions.h>
 #include "GLSLProgram.h"
 
+#define NEW_SHADER_CODE
+
 #ifdef VERBOSE_MESSAGING
 inline void AssertOpenGLState(const char* fileName, int line, const char* functionName) {
 	GLenum errorCode;
