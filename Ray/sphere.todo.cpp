@@ -37,7 +37,66 @@ void Sphere::initOpenGL(void) {
 	///////////////////////////
 	// Do OpenGL set-up here //
 	///////////////////////////
-	WARN_ONCE("method undefined");
+	// adapted from http://www.songho.ca/opengl/gl_sphere.html
+	const int stack_count = OpenGLTessellationComplexity;
+	const int sector_count = 2 * stack_count;
+	const double stack_step = Pi / stack_count;
+	const double sector_step = 2 * Pi / sector_count;
+	const double inverse_radius = 1. / radius;
+	std::vector<Vertex*> vertices;
+	// generate vertices
+	for (int i = 0; i <= stack_count; i++) {
+		const double stack_angle = Pi / 2 - i * stack_step;
+		const double xy = radius * cos(stack_angle);
+		const double z = sin(stack_angle);
+
+		// generate a vertical band of vertices around the sphere
+		for (int j = 0; j <= sector_count; j++) {
+			const double sector_angle = j * sector_step;
+			// find vertex position by implicit formula
+			const double x = xy * cos(sector_angle);
+			const double y = xy * sin(sector_angle);
+			// normalize vertex normals
+			const double n_x = x * inverse_radius;
+			const double n_y = y * inverse_radius;
+			const double n_z = z * inverse_radius;
+			// map texture coordinate between [0, 1]
+			const double u = static_cast<double>(j) / sector_count;
+			const double v = static_cast<double>(i) / sector_count;
+			// add vertex
+			const Point3D position(x, y, z);
+			const Point3D normal(n_x, n_y, n_z);
+			const Point2D texCoordinate(u, v);
+			auto vertex = new Vertex();
+			vertex->position = position;
+			vertex->normal = normal;
+			vertex->texCoordinate = texCoordinate;
+			vertices.push_back(vertex);
+		}
+	}
+	// generate CCW index list of triangles for each quad we formed with stacks and sectors
+	// k1--k1+1
+	// |  / |
+	// | /  |
+	// k2--k2+1
+	// we visit indices k1 -> k2 -> k1+1
+	// then indices k1+1 -> k2 -> k2+1
+	for (int i = 0; i < stack_count; i++) {
+		int k1 = i * (sector_count + 1);
+		int k2 = k1 + sector_count + 1;
+		for (int j = 0; j < sector_count; j++, k1++, k2++) {
+			// visit k1 -> k2 -> k1+1
+			if (i) {
+				MeshTriangle mesh_triangle(vertices[k1], vertices[k2], vertices[k1 + 1]);
+				mesh.push_back(mesh_triangle);
+			}
+			// visit k1+1 -> k2 -> k2+1
+			if (i != (stack_count - 1)) {
+				MeshTriangle mesh_triangle(vertices[k1 + 1], vertices[k2], vertices[k2 + 1]);
+				mesh.push_back(mesh_triangle);
+			}
+		}
+	}
 
 	// Sanity check to make sure that OpenGL state is good
 	ASSERT_OPEN_GL_STATE();
@@ -81,7 +140,27 @@ void Sphere::drawOpenGL(GLSLProgram* glslProgram) const {
 	//////////////////////////////
 	// Do OpenGL rendering here //
 	//////////////////////////////
+	for (const auto mesh_triangle : mesh) {
+		const auto v0 = mesh_triangle[0];
+		const auto v1 = mesh_triangle[1];
+		const auto v2 = mesh_triangle[2];
 
+		glBegin(GL_TRIANGLES);
+
+		//glTexCoord3d(v0->texCoordinate[0], v0->texCoordinate[1], v0->texCoordinate[2]);
+		glNormal3d(v0->normal[0], v0->normal[1], v0->normal[2]);
+		glVertex3d(v0->position[0], v0->position[1], v0->position[2]);
+
+		//glTexCoord3d(v1->texCoordinate[0], v1->texCoordinate[1], v1->texCoordinate[2]);
+		glNormal3d(v1->normal[0], v1->normal[1], v1->normal[2]);
+		glVertex3d(v1->position[0], v1->position[1], v1->position[2]);
+
+		//glTexCoord3d(v2->texCoordinate[0], v2->texCoordinate[1], v2->texCoordinate[2]);
+		glNormal3d(v2->normal[0], v2->normal[1], v2->normal[2]);
+		glVertex3d(v2->position[0], v2->position[1], v2->position[2]);
+
+		glEnd();
+	}
 
 	// Sanity check to make sure that OpenGL state is good
 	ASSERT_OPEN_GL_STATE();

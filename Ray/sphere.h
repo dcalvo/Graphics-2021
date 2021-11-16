@@ -5,6 +5,19 @@
 #include "shape.h"
 
 namespace Ray {
+	/** This class is used to hold a triangle of a sphere's tessellated mesh. */
+	class MeshTriangle {
+		/** The vertices associated with the triangle */
+		const class Vertex* _v[3];
+
+	public:
+		/** This operator returns a reference to the vertex index. */
+		const Vertex* operator[](int idx) const { return _v[idx]; }
+
+		/** The default constructor */
+		MeshTriangle(Vertex* v0, Vertex* v1, Vertex* v2) { _v[0] = v0, _v[1] = v1, _v[2] = v2; }
+	};
+
 	/** This class describes a sphere, and is represented by its center and radius. */
 	class Sphere : public Shape {
 		/** The OpenGL vertex buffer identifier */
@@ -27,6 +40,8 @@ namespace Ray {
 		Util::Point3D center;
 		/** The radius of the sphere */
 		double radius;
+		/** The mesh of the sphere */
+		std::vector<MeshTriangle> mesh;
 
 		/** This static method returns the directive describing the shape. */
 		static std::string Directive(void) { return "shape_sphere"; }
