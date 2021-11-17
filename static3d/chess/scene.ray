@@ -1,0 +1,175 @@
+#camera  25 40 25  -0.707107 -0.907107 -0.707107  -0.707107 0.707107 -0.707107  0.523
+// torches
+#light_point  0.96 0.6 0.32  1 1 1  1 1 1  15 16 -10  1.2 0 0.02
+#light_point  0.96 0.6 0.32  1 1 1  1 1 1  15 16 10  1.2 0 0.02
+#light_point  0.96 0.6 0.32  1 1 1  1 1 1  -15 16 -10  1.2 0 0.02
+#light_point  0.96 0.6 0.32  1 1 1  1 1 1  -15 16 -10  1.2 0 0.02
+#light_point  0.96 0.6 0.32  1 1 1  1 1 1  20 16 0  1.2 0 0.02
+#light_point  0.96 0.6 0.32  1 1 1  1 1 1  -20 16 0  1.2 0 0.02
+#material  0 0 0  0.3 0.3 0.3  0.1 0.1 0.5  1 1 1 128  0 0 0  1.05  -1  !!
+
+#ray_file  _board_with_pieces.ray
+#ray_file  _table.ray
+#ray_file  _stool.ray
+#ray_file  _wall.ray
+#ray_file  _floor.ray
+#ray_file  _torch.ray
+#ray_file  _ceiling.ray
+
+// board with pieces
+#static_affine  .33 0 0 0 0 0.33 0 0 0 0 .33 0 0 7.3 0 1
+  #ray_file_instance  0
+
+// table
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1
+  #ray_file_instance  1
+
+// stools
+#static_affine  1.9 0 0 0 0 2 0 0 0 0 1.9 0 0 2 -7 1
+  #ray_file_instance  2
+#static_affine  1.9 0 0 0 0 2 0 0 0 0 1.9 0 0 2 7 1
+  #ray_file_instance  2
+  
+// walls
+#static_affine  0 -7 0 0 7 0 0 0 0 0 7 0 -15 16 0 1
+  #ray_file_instance  3
+#static_affine  0 0 -1 0 0 1 0 0 1 0 0 0 0 0 0 1
+  #static_affine  0 -7 0 0 7 0 0 0 0 0 7 0 -20 16 0 1
+    #ray_file_instance  3
+#static_affine  0 0 1 0 0 1 0 0 -1 0 0 0 0 0 0 1
+  #static_affine  0 -7 0 0 7 0 0 0 0 0 7 0 -20 16 0 1
+    #ray_file_instance  3
+#static_affine  -1 0 0 0 0 1 0 0 0 0 -1 0 0 0 0 1
+  #static_affine  0 -7 0 0 7 0 0 0 0 0 7 0 -15 16 0 1
+    #ray_file_instance  3
+	
+// floor tiles
+// axes
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 0 0 6 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 0 0 12 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 0 0 18 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 0 0 -6 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 0 0 -12 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 0 0 -18 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 6 0 0 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 12 0 0 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 18 0 0 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -6 0 0 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -12 0 0 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -18 0 0 1
+// quad 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -6 0 -6 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -12 0 -6 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -18 0 -6 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -6 0 -12 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -12 0 -12 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -18 0 -12 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -6 0 -18 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -12 0 -18 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -18 0 -18 1
+// quad 2
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -6 0 6 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -12 0 6 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -18 0 6 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -6 0 12 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -12 0 12 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -18 0 12 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -6 0 18 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -12 0 18 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -18 0 18 1
+  #ray_file_instance  4
+// quad 3
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 6 0 6 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 12 0 6 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 18 0 6 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 6 0 12 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 12 0 12 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 18 0 12 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 6 0 18 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 12 0 18 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 18 0 18 1
+  #ray_file_instance  4
+// quad 4
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 6 0 -6 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 12 0 -6 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 18 0 -6 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 6 0 -12 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 12 0 -12 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 18 0 -12 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 6 0 -18 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 12 0 -18 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 18 0 -18 1
+  #ray_file_instance  4
+  
+// torches
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 0 0 -10 1
+  #static_affine  0 1 0 0 -1 0 0 0 0 0 1 0 15 16 0 1
+    #ray_file_instance  5
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 0 0 10 1
+  #static_affine  0 1 0 0 -1 0 0 0 0 0 1 0 15 16 0 1
+    #ray_file_instance  5
+#static_affine  0 0 -1 0 0 1 0 0 1 0 0 0 0 0 0 1
+  #static_affine  0 1 0 0 -1 0 0 0 0 0 1 0 20 16 0 1
+    #ray_file_instance  5
+#static_affine  0 0 1 0 0 1 0 0 -1 0 0 0 0 0 0 1
+  #static_affine  0 1 0 0 -1 0 0 0 0 0 1 0 20 16 0 1
+    #ray_file_instance  5
+#static_affine  -1 0 0 0 0 1 0 0 0 0 -1 0 0 0 -10 1
+  #static_affine  0 1 0 0 -1 0 0 0 0 0 1 0 15 16 0 1
+    #ray_file_instance  5
+#static_affine  -1 0 0 0 0 1 0 0 0 0 -1 0 0 0 10 1
+  #static_affine  0 1 0 0 -1 0 0 0 0 0 1 0 15 16 0 1
+    #ray_file_instance  5
+	
+// ceiling (or lack thereof)
+#static_affine  6 0 0 0 0 6 0 0 0 0 7 0 0 35 0 1
+  #ray_file_instance  6

@@ -1,0 +1,91 @@
+#camera  0 0 0  0 0 0  0 0 0  0
+
+#ray_file  _board.ray
+#ray_file  _white_pawn.ray		// 1
+#ray_file  _white_rook.ray		// 2
+#ray_file  _white_knight.ray	// 3
+#ray_file  _white_bishop.ray	// 4
+#ray_file  _white_king.ray		// 5
+#ray_file  _white_queen.ray		// 6
+#ray_file  _black_pawn.ray		// 7
+#ray_file  _black_rook.ray		// 8
+#ray_file  _black_knight.ray	// 9
+#ray_file  _black_bishop.ray	// 10
+#ray_file  _black_king.ray		// 11
+#ray_file  _black_queen.ray		// 12
+
+// board
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1
+  #ray_file_instance  0
+  
+// black pieces
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 7 0 7 1
+  #ray_file_instance  8
+#static_affine  -1 0 0 0 0 1 0 0 0 0 -1 0 5 0 7 1
+  #ray_file_instance  9
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 3 0 7 1
+  #ray_file_instance  10
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 1 0 7 1
+  #ray_file_instance  11
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -1 0 7 1
+  #ray_file_instance  12
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -3 0 7 1
+  #ray_file_instance  10
+#static_affine  -1 0 0 0 0 1 0 0 0 0 -1 0 -5 0 7 1
+  #ray_file_instance  9
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -7 0 7 1
+  #ray_file_instance  8
+  
+// black pawns
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 7 0 5 1
+  #ray_file_instance  7
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 5 0 5 1
+  #ray_file_instance  7
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 3 0 5 1
+  #ray_file_instance  7
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 1 0 5 1
+  #ray_file_instance  7
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -1 0 5 1
+  #ray_file_instance  7
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -3 0 5 1
+  #ray_file_instance  7
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -5 0 5 1
+  #ray_file_instance  7
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -7 0 5 1
+  #ray_file_instance  7
+
+// white pieces
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 7 0 -7 1
+  #ray_file_instance  2
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 5 0 -7 1
+  #ray_file_instance  3
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 3 0 -7 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 1 0 -7 1
+  #ray_file_instance  5
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -1 0 -7 1
+  #ray_file_instance  6
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -3 0 -7 1
+  #ray_file_instance  4
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -5 0 -7 1
+  #ray_file_instance  3
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -7 0 -7 1
+  #ray_file_instance  2
+  
+// white pawns
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 7 0 -5 1
+  #ray_file_instance  1
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 5 0 -5 1
+  #ray_file_instance  1
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 3 0 -5 1
+  #ray_file_instance  1
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 1 0 -5 1
+  #ray_file_instance  1
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -1 0 -5 1
+  #ray_file_instance  1
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -3 0 -5 1
+  #ray_file_instance  1
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -5 0 -5 1
+  #ray_file_instance  1
+#static_affine  1 0 0 0 0 1 0 0 0 0 1 0 -7 0 -5 1
+  #ray_file_instance  1
