@@ -1,0 +1,71 @@
+#camera  0 0 0  0 0 0  0 0 0  0
+
+#texture  space.jpg
+#material  0 0 0  1 1 1  1 1 1  0 0 0 128  0 0 0  1.05  0  !!
+#vertex  -1 0 1  0 1 0  0 1
+#vertex  1 0 1  0 1 0  1 1
+#vertex  1 0 -1  0 1 0  1 0
+#vertex  -1 0 -1  0 1 0  0 0
+
+#static_affine  -1 0 0 0 0 -1 0 0 0 0 1 0 0 0 0 1
+#shape_triangles  0
+  #shape_list_begin
+    #shape_triangle  0 1 2
+    #shape_triangle  0 2 3
+  #shape_list_end
+
+#static_affine  -1 0 0 0 0 -1 0 0 0 0 1 0 0 0 2 1
+#shape_triangles  0
+  #shape_list_begin
+    #shape_triangle  0 1 2
+    #shape_triangle  0 2 3
+  #shape_list_end
+
+#static_affine  -1 0 0 0 0 -1 0 0 0 0 1 0 2 0 0 1
+#shape_triangles  0
+  #shape_list_begin
+    #shape_triangle  0 1 2
+    #shape_triangle  0 2 3
+  #shape_list_end
+
+#static_affine  -1 0 0 0 0 -1 0 0 0 0 1 0 0 0 -2 1
+#shape_triangles  0
+  #shape_list_begin
+    #shape_triangle  0 1 2
+    #shape_triangle  0 2 3
+  #shape_list_end
+
+#static_affine  -1 0 0 0 0 -1 0 0 0 0 1 0 -2 0 0 1
+#shape_triangles  0
+  #shape_list_begin
+    #shape_triangle  0 1 2
+    #shape_triangle  0 2 3
+  #shape_list_end
+
+#static_affine  -1 0 0 0 0 -1 0 0 0 0 1 0 2 0 2 1
+#shape_triangles  0
+  #shape_list_begin
+    #shape_triangle  0 1 2
+    #shape_triangle  0 2 3
+  #shape_list_end
+
+#static_affine  -1 0 0 0 0 -1 0 0 0 0 1 0 -2 0 2 1
+#shape_triangles  0
+  #shape_list_begin
+    #shape_triangle  0 1 2
+    #shape_triangle  0 2 3
+  #shape_list_end
+
+#static_affine  -1 0 0 0 0 -1 0 0 0 0 1 0 2 0 -2 1
+#shape_triangles  0
+  #shape_list_begin
+    #shape_triangle  0 1 2
+    #shape_triangle  0 2 3
+  #shape_list_end
+
+#static_affine  -1 0 0 0 0 -1 0 0 0 0 1 0 -2 0 -2 1
+#shape_triangles  0
+  #shape_list_begin
+    #shape_triangle  0 1 2
+    #shape_triangle  0 2 3
+  #shape_list_end

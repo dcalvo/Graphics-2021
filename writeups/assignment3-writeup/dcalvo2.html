@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="dcalvo2_HTML/style.css" />
+    <title>Assignment 3: OpenGL Rendering Writeup</title>
+  </head>
+  <body>
+    <div id="center">
+      <h1>Assignment 3: OpenGL Rendering</h1>
+      <h2>Project Info</h2>
+      <ul>
+        <li>David Calvo</li>
+        <li>dcalvo2</li>
+        <li>
+          MSVC @ C++20 / Visual Studio 2019 (Community Edition) / Windows 10
+        </li>
+        <li>0 Late Days used</li>
+      </ul>
+
+      <h2>Table of Contents</h2>
+      <p>Anything not mentioned in this list was not attempted.</p>
+      <ul>
+        <li><a href="#Camera">Camera::drawOpenGL</a> (Full)</li>
+        <li><a href="#ShapeList">Camera::drawOpenGL</a> (Full)</li>
+        <li><a href="#TriangleList">Camera::drawOpenGL</a> (Full)</li>
+        <li><a href="#Triangle">Camera::drawOpenGL</a> (Full)</li>
+        <li><a href="#Sphere">Camera::drawOpenGL</a> (Full)</li>
+        <li><a href="#Material">Camera::drawOpenGL</a> (Full)</li>
+        <li><a href="#DirectionalLight">Camera::drawOpenGL</a> (Full)</li>
+        <li><a href="#PointLight">Camera::drawOpenGL</a> (Full)</li>
+        <li><a href="#SpotLight">Camera::drawOpenGL</a> (Full)</li>
+        <li><a href="#AffineShape">Camera::drawOpenGL</a> (Full)</li>
+        <li><a href="#Texture">Camera::drawOpenGL</a> (Full)</li>
+        <li><a href="#Box">Camera::drawOpenGL</a> (Full)</li>
+        <li><a href="#Cylinder">Camera::drawOpenGL</a> (Full)</li>
+        <li><a href="#Cone">Camera::drawOpenGL</a> (Full)</li>
+        <li><a href="#Torus">Camera::drawOpenGL</a> (Full)</li>
+        <li><a href="#moveForward">Camera::drawOpenGL</a> (Full)</li>
+        <li><a href="#moveRight">Camera::drawOpenGL</a> (Full)</li>
+        <li><a href="#moveUp">Camera::drawOpenGL</a> (Full)</li>
+        <li><a href="#rotateUp">Camera::drawOpenGL</a> (Full)</li>
+        <li><a href="#rotateRight">Camera::drawOpenGL</a> (Full)</li>
+        <li><a href="#AA">Camera::drawOpenGL</a> (Full)</li>
+        <li><a href="#Art">Art Contest Submission</a></li>
+      </ul>
+
+      <p>
+        All images were generated with the command
+        <code>Assignment3.exe --in test.ray --aa 1</code>. <code>--aa</code> is
+        my custom parameter used to define the number of AA samples to take when
+        rendering each frame.
+      </p>
+
+      <h2>Implementation Details</h2>
+      <h3 id="Camera">Camera::drawOpenGL</h3>
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="ShapeList">ShapeList::drawOpenGL</h3>
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="TriangleList">TriangleList::drawOpenGL</h3>
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="Triangle">Triangle::drawOpenGL</h3>
+      <img src="dcalvo2_HTML/triangle.PNG" />
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="Sphere">Sphere::drawOpenGL</h3>
+      <img src="dcalvo2_HTML/sphere.PNG" />
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="Material">Material::drawOpenGL</h3>
+      <p>
+        Fully implemented. See the light examples below for examples of
+        materials without textures.
+      </p>
+
+      <h3 id="DirectionalLight">DirectionalLight::drawOpenGL</h3>
+      <img src="dcalvo2_HTML/directional.PNG" />
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="PointLight">PointLight::drawOpenGL</h3>
+      <img src="dcalvo2_HTML/point.PNG" />
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="SpotLight">SpotLight::drawOpenGL</h3>
+      <img src="dcalvo2_HTML/spot.PNG" />
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="AffineShape">AffineShape::drawOpenGL</h3>
+      <img src="dcalvo2_HTML/affine.PNG" />
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="Texture">Texture Mapping</h3>
+      <p>
+        Fully implemented. See the examples above and below for every object
+        with texture mapping implemented.
+      </p>
+
+      <h3 id="Box">Box::drawOpenGL</h3>
+      <img src="dcalvo2_HTML/box.PNG" />
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="Cylinder">Cylinder::drawOpenGL</h3>
+      <img src="dcalvo2_HTML/cylinder.PNG" />
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="Cone">Cone::drawOpenGL</h3>
+      <img src="dcalvo2_HTML/cone.PNG" />
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="Torus">Torus::drawOpenGL</h3>
+      <img src="dcalvo2_HTML/torus.PNG" />
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="moveForward">Camera::moveForward</h3>
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="moveRight">Camera::moveRight</h3>
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="moveUp">Camera::moveUp</h3>
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="rotateUp">Camera::rotateUp</h3>
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="rotateRight">Camera::rotateRight</h3>
+      <p>No notes. Fully implemented.</p>
+
+      <h3 id="AA">Anti-aliasing</h3>
+      <img src="dcalvo2_HTML/no_aa.PNG" />
+      <br />
+      <caption>
+        Anti-aliasing disabled.
+      </caption>
+      <br />
+      <img src="dcalvo2_HTML/aa.PNG" />
+      <br />
+      <caption>
+        16x anti-aliasing.
+      </caption>
+      <p>
+        Fully implemented. The implementation details come from the OpenGL
+        reference manual and are implemented under
+        <code>Scene::drawOpenGL</code>.
+      </p>
+
+      <h3 id="Scene">Self-created Room Scene</h3>
+      <code>--in scene.ray</code>
+      <br />
+      <img
+        src="dcalvo2_HTML/scene.PNG"
+        alt="Probably not the most comfortable place to play."
+        width="1280px"
+      />
+      <br />
+      <caption>
+        A dimly, torch-lit room in which two unseen forces are about to engage
+        in one of time's oldest games.
+      </caption>
+      <br />
+      <p>
+        While textures in the scene were taken from Google Images, everything is
+        hand-modeled by myself. There is a chess board, a table, 2 marble seats,
+        6 torches, 4 walls, a floor, and a ceiling (which is simply an image of
+        the stars). Each torch acts as a light source with a point light
+        embedded inside of it. The walls, floor, ceiling, torches, sconces,
+        table, and seats each use a texture. The chess board uses two (the
+        squares and border). This totals 9 different textures.
+      </p>
+      <p>Here are images of the individual furnishings.</p>
+      <img src="dcalvo2_HTML/king.PNG" />
+      <br />
+      <caption>
+        White's king. (one of six unique pieces)
+      </caption>
+      <br />
+      <img src="dcalvo2_HTML/board.PNG" />
+      <br />
+      <caption>
+        A full set. I wish I could've had the time to move the pieces into a
+        midgame.
+      </caption>
+      <br />
+      <img src="dcalvo2_HTML/table.PNG" />
+      <br />
+      <caption>
+        The surface on which our game sits.
+      </caption>
+      <br />
+      <img src="dcalvo2_HTML/stool.PNG" />
+      <br />
+      <caption>
+        The surface on which our players sit.
+      </caption>
+      <br />
+      <img src="dcalvo2_HTML/torch.PNG" />
+      <br />
+      <caption>
+        An
+        <i>impressionist</i>
+        torch and its wall sconce. Let's not talk about the "flame".
+      </caption>
+      <br />
+
+      <h3 id="Art">Art Contest Submission</h3>
+      <code>--in chess_room.ray</code>
+      <br />
+      <p>
+        My art submissions are <code>chess_room.ray</code> and an image of the
+        resulting render. <code>chess_room.ray</code> is simply a modified
+        version of <code>scene.ray</code>. The only modification from the
+        original scene is that 2 torches were removed so the camera could have
+        an unobstructed view into the scene (otherwise it would see the backside
+        of them).
+      </p>
+      <img src="dcalvo2_HTML/dcalvo2.art.submission.png" width="1280px" />
+      <br />
+      <caption>
+        Inspired by Dungeon Master, Eye of the Beholder, and Legend of Grimrock.
+      </caption>
+    </div>
+  </body>
+</html>

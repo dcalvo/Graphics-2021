@@ -1,0 +1,6 @@
+#camera  0 0 0  0 0 0  0 0 0  0
+
+#texture  white_marble.jpg
+#material  0 0 0  0.3 0.3 0.3  0.7 0.7 0.7  1 1 1 128  0 0 0  1.05  0  !!
+
+#shape_box  0  0 0 0  1 1 1
