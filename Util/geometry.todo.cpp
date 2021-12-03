@@ -68,7 +68,18 @@ namespace Util {
 		///////////////////////////////////////////////
 		// Transform a quaternion to a rotation here //
 		///////////////////////////////////////////////
-		THROW("method undefined");
-		return Matrix3D();
+		const auto unit_q = parameter.unit();
+		const double a = unit_q.real, b = unit_q.imag[0], c = unit_q.imag[1], d = unit_q.imag[2];
+		Matrix3D r;
+		r(0, 0) = 1 - 2 * c * c - 2 * d * d;
+		r(0, 1) = 2 * b * c - 2 * a * d;
+		r(0, 2) = 2 * b * d + 2 * a * c;
+		r(1, 0) = 2 * b * c + 2 * a * d;
+		r(1, 1) = 1 - 2 * b * b - 2 * d * d;
+		r(1, 2) = 2 * c * d - 2 * a * b;
+		r(2, 0) = 2 * b * d - 2 * a * c;
+		r(2, 1) = 2 * c * d + 2 * a * b;
+		r(2, 2) = 1 - 2 * b * b - 2 * c * c;
+		return r;
 	}
 }
