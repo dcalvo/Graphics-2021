@@ -44,8 +44,11 @@ namespace Util {
 		///////////////////////////////////////
 		// Compute the closest rotation here //
 		///////////////////////////////////////
-		THROW("method undefined");
-		return Matrix();
+		Matrix<Dim> r1, r2, diagonal;
+		SVD(r1, diagonal, r2);
+		for (int i = 0; i < Dim; i++) for (int j = 0; j < Dim; j++) if (i == j) diagonal(i, j) = 1.;
+		diagonal(Dim, Dim) = (r1 * r2).determinant();
+		return r1 * diagonal * r2;
 	}
 
 	/////////////////
