@@ -118,7 +118,27 @@ void Cylinder::drawOpenGL(GLSLProgram* glslProgram) const {
 	// Do OpenGL rendering here //
 	//////////////////////////////
 	_material->drawOpenGL(glslProgram);
-	for (const auto& triangle : mesh) triangle.drawOpenGL(glslProgram);
+
+	GLUquadric* q = gluNewQuadric();
+
+	glPushMatrix();
+
+	glTranslatef(center[0], center[1] - height / 2, center[2]);
+	glRotatef(90, -1, 0, 0);
+	gluCylinder(q, radius, radius, height, OpenGLTessellationComplexity, OpenGLTessellationComplexity);
+
+	glPushMatrix();
+	glTranslatef(0, 0, height);
+	gluDisk(q, 0, radius, OpenGLTessellationComplexity, OpenGLTessellationComplexity);
+	glPopMatrix();
+
+	glRotatef(180, 1, 0, 0); // Normals pointing out
+	gluDisk(q, 0, radius, OpenGLTessellationComplexity, OpenGLTessellationComplexity);
+
+	glPopMatrix();
+
+	gluDeleteQuadric(q);
+
 	// Sanity check to make sure that OpenGL state is good
 	ASSERT_OPEN_GL_STATE();
 }

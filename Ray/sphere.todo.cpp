@@ -135,7 +135,13 @@ void Sphere::drawOpenGL(GLSLProgram* glslProgram) const {
 	// Do OpenGL rendering here //
 	//////////////////////////////
 	_material->drawOpenGL(glslProgram);
-	for (const auto& triangle : mesh) triangle.drawOpenGL(glslProgram);
+	glPushMatrix();
+	glTranslatef(center[0], center[1], center[2]);
+	GLUquadric* q = gluNewQuadric();
+	gluSphere(q, radius, 2 * OpenGLTessellationComplexity, OpenGLTessellationComplexity);
+	gluDeleteQuadric(q);
+	glPopMatrix();
+
 	// Sanity check to make sure that OpenGL state is good
 	ASSERT_OPEN_GL_STATE();
 }
