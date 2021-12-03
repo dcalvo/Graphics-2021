@@ -35,8 +35,18 @@ namespace Util {
 		//////////////////////////////////////
 		// Compute the matrix exponent here //
 		//////////////////////////////////////
-		THROW("method undefined");
-		return Matrix();
+		// 0th term
+		Matrix<Dim> exponent = Matrix<Dim>::Identity();
+		// 1st and beyond terms
+		for (int i = 1; i < terms; i++) {
+			Matrix<Dim> product = Matrix<Dim>::Identity();
+			double n_factorial = 1;
+			for (int j = 1; j <= i; j++) product = product * m;
+			for (int j = 2; j <= i; j++) n_factorial *= j;
+			product = product * (1 / n_factorial);
+			exponent = exponent + product;
+		}
+		return exponent;
 	}
 
 	template <unsigned int Dim>
