@@ -29,49 +29,51 @@ DAMAGE.
 #include <math.h>
 #include <Util/exceptions.h>
 
-namespace Util
-{
+namespace Util {
 	///////////////////
 	// Interpolation //
 	///////////////////
-	template< typename SampleType >
-	SampleType Interpolation::Sample( const std::vector< SampleType > &samples , double t , int interpolationType )
-	{
-		switch( interpolationType )
-		{
+	template <typename SampleType>
+	SampleType Interpolation::Sample(const std::vector<SampleType>& samples, double t, int interpolationType) {
+		switch (interpolationType) {
 		case NEAREST:
-		{
-			t *= samples.size();
-			int it1 = (int)floor(t);
-			int it2 = ( it1 + 1 ) % samples.size();
-			t -= it1;
-			if( t<0.5 ) return samples[it1];
-			else        return samples[it2];
-			break;
-		}
+			{
+				t *= samples.size();
+				int it1 = static_cast<int>(floor(t));
+				int it2 = (it1 + 1) % samples.size();
+				t -= it1;
+				if (t < 0.5) return samples[it1];
+				return samples[it2];
+			}
 		case LINEAR:
-			///////////////////////////////////////
-			// Perform linear interpolation here //
-			///////////////////////////////////////
-			THROW( "method undefined" );
-			return samples[0];
-			break;
+			{
+				///////////////////////////////////////
+				// Perform linear interpolation here //
+				///////////////////////////////////////
+				t *= samples.size();
+				int it1 = static_cast<int>(floor(t));
+				int it2 = (it1 + 1) % samples.size();
+				t -= it1;
+				return samples[it1] + (samples[it2] - samples[it1]) * t;
+			}
 		case CATMULL_ROM:
-			////////////////////////////////////////////
-			// Perform Catmull-Rom interpolation here //
-			////////////////////////////////////////////
-			THROW( "method undefined" );
-			return samples[0];
-			break;
+			{
+				////////////////////////////////////////////
+				// Perform Catmull-Rom interpolation here //
+				////////////////////////////////////////////
+				THROW("method undefined");
+				return samples[0];
+			}
 		case UNIFORM_CUBIC_B_SPLINE:
-			///////////////////////////////////////////////////////
-			// Perform uniform cubic b-spline interpolation here //
-			///////////////////////////////////////////////////////
-			THROW( "method undefined" );
-			return samples[0];
-			break;
+			{
+				///////////////////////////////////////////////////////
+				// Perform uniform cubic b-spline interpolation here //
+				///////////////////////////////////////////////////////
+				THROW("method undefined");
+				return samples[0];
+			}
 		default:
-			ERROR_OUT( "unrecognized interpolation type" );
+			ERROR_OUT("unrecognized interpolation type");
 			return samples[0];
 		}
 	}
