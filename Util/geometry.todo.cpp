@@ -31,29 +31,55 @@ DAMAGE.
 #include <Util/exceptions.h>
 #include "geometry.h"
 
-namespace Util
-{
+namespace Util {
 	////////////////////////////
 	// EulerRotationParameter //
 	////////////////////////////
-	Matrix3D EulerRotationParameter::operator() ( void ) const
-	{
+	Matrix3D EulerRotationParameter::operator()(void) const {
 		///////////////////////////////////////////////
 		// Transform Euler angles to a rotation here //
 		///////////////////////////////////////////////
-		THROW( "method undefined" );
-		return Matrix3D();
+		Matrix3D x, y, z;
+		// from the "Modeling Transformations" lecture
+		x(0, 0) = 1;
+		x(1, 1) = cos(parameter[0]);
+		x(1, 2) = -sin(parameter[0]);
+		x(2, 1) = sin(parameter[0]);
+		x(2, 2) = cos(parameter[0]);
+
+		y(0, 0) = cos(parameter[1]);
+		y(0, 2) = sin(parameter[1]);
+		y(1, 1) = 1;
+		y(2, 0) = -sin(parameter[1]);
+		y(2, 2) = cos(parameter[1]);
+
+		z(0, 0) = cos(parameter[2]);
+		z(0, 1) = -sin(parameter[2]);
+		z(1, 0) = sin(parameter[2]);
+		z(1, 1) = cos(parameter[2]);
+		z(2, 2) = 1;
+		return z * y * x;
 	}
 
 	/////////////////////////////////
 	// QuaternionRotationParameter //
 	/////////////////////////////////
-	Matrix3D QuaternionRotationParameter::operator()( void ) const
-	{
+	Matrix3D QuaternionRotationParameter::operator()(void) const {
 		///////////////////////////////////////////////
 		// Transform a quaternion to a rotation here //
 		///////////////////////////////////////////////
-		THROW( "method undefined" );
-		return Matrix3D();
+		const auto unit_q = parameter.unit();
+		const double a = unit_q.real, b = unit_q.imag[0], c = unit_q.imag[1], d = unit_q.imag[2];
+		Matrix3D r;
+		r(0, 0) = 1 - 2 * c * c - 2 * d * d;
+		r(0, 1) = 2 * b * c - 2 * a * d;
+		r(0, 2) = 2 * b * d + 2 * a * c;
+		r(1, 0) = 2 * b * c + 2 * a * d;
+		r(1, 1) = 1 - 2 * b * b - 2 * d * d;
+		r(1, 2) = 2 * c * d - 2 * a * b;
+		r(2, 0) = 2 * b * d - 2 * a * c;
+		r(2, 1) = 2 * c * d + 2 * a * b;
+		r(2, 2) = 1 - 2 * b * b - 2 * c * c;
+		return r;
 	}
 }

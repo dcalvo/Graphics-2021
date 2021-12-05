@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="dcalvo2_HTML/style.css" />
+    <title>Assignment 4: Keyframe Animation</title>
+  </head>
+  <body>
+    <div id="center">
+      <h1>Assignment 4: Keyframe Animation</h1>
+      <h2>Project Info</h2>
+      <ul>
+        <li>David Calvo</li>
+        <li>dcalvo2</li>
+        <li>
+          MSVC @ C++20 / Visual Studio 2019 (Community Edition) / Windows 10
+        </li>
+        <li>0 Late Days used</li>
+      </ul>
+
+      <h2>Table of Contents</h2>
+      <p>Anything not mentioned in this list was not attempted.</p>
+      <ul>
+        <li><a href="#linear">Interpolation::Sample {Linear}</a> (Full)</li>
+        <li><a href="#euler">EulerRotationParameter::operator</a> (Full)</li>
+        <li><a href="#svd">Matrix::closestRotation</a> (Full)</li>
+        <li>
+          <a href="#quaternion">QuaternionRotationParameter::operator</a> (Full)
+        </li>
+        <li><a href="#skew">Matrix::Exp</a> (Full)</li>
+        <li>
+          <a href="#catmull-rom">Interpolation::Sample {Catmull-Rom}</a> (Full)
+        </li>
+        <li>
+          <a href="#uniform">Interpolation::Sample {Uniform Cubic B-Spline}</a>
+          (Full)
+        </li>
+        <li>
+          <a href="#gif"
+            >Generate a sequence of images by taking snapshots of the scene</a
+          >
+          (Full)
+        </li>
+        <li>
+          <a href="#art">Video Art Contest Submission</a>
+        </li>
+      </ul>
+
+      <h2>Implementation Details</h2>
+
+      <h3 id="linear">Interpolation::Sample {Linear}</h3>
+      <code> --fps 60 --gif-length 1 --interpolant 2 --parameter 1</code>
+      <br />
+      <img
+        src="dcalvo2_HTML/linear.gif"
+        alt="Linear interpolation with trivial parameterization."
+        width="500px"
+      />
+      <br />
+      <p>No notes. Completey implemented.</p>
+
+      <h3 id="euler">EulerRotationParameter::operator</h3>
+      <code> --fps 60 --gif-length 1 --interpolant 2 --parameter 3</code>
+      <br />
+      <img
+        src="dcalvo2_HTML/euler.gif"
+        alt="Linear interpolation with Euler parameterization."
+        width="500px"
+      />
+      <br />
+      <p>No notes. Completey implemented.</p>
+
+      <h3 id="svd">Matrix::closestRotation</h3>
+      <code> --fps 60 --gif-length 1 --interpolant 2 --parameter 2</code>
+      <br />
+      <img
+        src="dcalvo2_HTML/svd.gif"
+        alt="Linear interpolation with SVD parameterization."
+        width="500px"
+      />
+      <br />
+      <p>No notes. Completey implemented.</p>
+
+      <h3 id="quaternion">QuaternionRotationParameter::operator</h3>
+      <code> --fps 60 --gif-length 1 --interpolant 2 --parameter 5</code>
+      <br />
+      <img
+        src="dcalvo2_HTML/quaternion.gif"
+        alt="Linear interpolation with quaternion parameterization."
+        width="500px"
+      />
+      <br />
+      <p>No notes. Completey implemented.</p>
+
+      <h3 id="skew">Matrix::Exp</h3>
+      <code> --fps 60 --gif-length 1 --interpolant 2 --parameter 4</code>
+      <br />
+      <img
+        src="dcalvo2_HTML/skew.gif"
+        alt="Linear interpolation with skew-symmetric parameterization."
+        width="500px"
+      />
+      <br />
+      <p>No notes. Completey implemented.</p>
+
+      <h3 id="catmull-rom">Interpolation::Sample {Catmull-Rom}</h3>
+      <code> --fps 60 --gif-length 1 --interpolant 3 --parameter 5</code>
+      <br />
+      <img
+        src="dcalvo2_HTML/catmull-rom.gif"
+        alt="Catmull-Rom interpolation with quaternion parameterization."
+        width="500px"
+      />
+      <br />
+      <p>No notes. Completey implemented.</p>
+
+      <h3 id="uniform">Interpolation::Sample {Uniform Cubic B-Spline}</h3>
+      <code> --fps 60 --gif-length 1 --interpolant 4 --parameter 5</code>
+      <br />
+      <img
+        src="dcalvo2_HTML/uniform.gif"
+        alt="Uniform cubic B-spline interpolation with quaternion parameterization."
+        width="500px"
+      />
+      <br />
+      <p>No notes. Completey implemented.</p>
+
+      <h3 id="gif">
+        Generate a sequence of images by taking snapshots of the scene
+      </h3>
+      <code> --fps 60 --gif-length 1</code>
+      <p>
+        Completey implemented. Two additional settings were added to facilitate
+        the creation of image sequences. The first is a
+        <code>gif-length</code> setting that determines how many seconds worth
+        of video images are generated. The second is an <code>fps</code> (frames
+        per second) setting that indicates how many frames should be in each
+        second of video images. The settings above will generate 60 video images
+        (60 images per second for 1 second).
+      </p>
+
+      <h3 id="art">Video Art Contest Submission</h3>
+      <code>
+        --width 1920 --height 1080 --interpolant 4 --parameter 5 --fps 60
+        --gif-length 15</code
+      >
+      <br />
+      <img
+        src="dcalvo2_HTML/art.gif"
+        alt="Uniform cubic B-spline interpolation with quaternion parameterization."
+        width="1000px"
+      />
+      <br />
+      <p>
+        This is my animation engine's rendering of the
+        <code>juggleball01.key</code> key file.
+      </p>
+    </div>
+  </body>
+</html>

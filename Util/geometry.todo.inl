@@ -35,8 +35,18 @@ namespace Util {
 		//////////////////////////////////////
 		// Compute the matrix exponent here //
 		//////////////////////////////////////
-		THROW("method undefined");
-		return Matrix();
+		// 0th term
+		Matrix<Dim> exponent = Matrix<Dim>::Identity();
+		// 1st and beyond terms
+		for (int i = 1; i < terms; i++) {
+			Matrix<Dim> product = Matrix<Dim>::Identity();
+			double n_factorial = 1;
+			for (int j = 1; j <= i; j++) product = product * m;
+			for (int j = 2; j <= i; j++) n_factorial *= j;
+			product = product * (1 / n_factorial);
+			exponent = exponent + product;
+		}
+		return exponent;
 	}
 
 	template <unsigned int Dim>
@@ -44,8 +54,11 @@ namespace Util {
 		///////////////////////////////////////
 		// Compute the closest rotation here //
 		///////////////////////////////////////
-		THROW("method undefined");
-		return Matrix();
+		Matrix<Dim> r1, r2, diagonal;
+		SVD(r1, diagonal, r2);
+		for (int i = 0; i < Dim; i++) for (int j = 0; j < Dim; j++) if (i == j) diagonal(i, j) = 1.;
+		diagonal(Dim, Dim) = (r1 * r2).determinant();
+		return r1 * diagonal * r2;
 	}
 
 	/////////////////

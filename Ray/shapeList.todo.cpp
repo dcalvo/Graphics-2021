@@ -161,11 +161,9 @@ void AffineShape::drawOpenGL(GLSLProgram* glslProgram) const {
 	// Do OpenGL rendering here //
 	//////////////////////////////
 	const Matrix4D localToGlobal = getMatrix();
-	std::vector<double> m;
-	for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) m.push_back(localToGlobal(j, i));
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
-	glMultMatrixd(m.data());
+	glMultMatrixd(localToGlobal[0]);
 	_shape->drawOpenGL(glslProgram);
 	glPopMatrix();
 	// Sanity check to make sure that OpenGL state is good

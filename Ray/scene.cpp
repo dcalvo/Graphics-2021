@@ -485,7 +485,7 @@ void accPerspective(GLdouble vfov, GLdouble aspect, GLdouble zNear, GLdouble zFa
 	accFrustrum(left, right, bottom, top, zNear, zFar, pixdx, pixdy, eyedx, eyedy, focus);
 }
 
-unsigned int Scene::aa_samples;
+unsigned int Scene::aa_samples = 1;
 
 void Scene::drawOpenGL(void) const {
 
