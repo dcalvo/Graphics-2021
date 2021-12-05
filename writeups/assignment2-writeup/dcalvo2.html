@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="dcalvo2_HTML/style.css" />
+    <title>Assignment 2: Ray Tracing</title>
+  </head>
+  <body>
+    <div id="center">
+      <h1>Assignment 2: Ray Tracing</h1>
+      <h2>Project Info</h2>
+      <ul>
+        <li>David Calvo</li>
+        <li>dcalvo2</li>
+        <li>
+          MSVC @ C++20 / Visual Studio 2019 (Community Edition) / Windows 10
+        </li>
+        <li>0 Late Days used</li>
+      </ul>
+
+      <h2>Table of Contents</h2>
+      <ul>
+        <li><a href="#Camera::getRay">Camera::getRay</a> (Complete)</li>
+        <li>
+          <a href="#ShapeList::intersect">ShapeList::intersect</a> (Complete)
+        </li>
+        <li><a href="#Sphere::intersect">Sphere::intersect</a> (Complete)</li>
+        <li>
+          <a href="#TriangeList::intersect">TriangeList::intersect</a>
+          (Complete)
+        </li>
+        <li><a href="#Scene::getColor">Scene::getColor</a> (Complete)</li>
+        <li><a href="#getAmbient">getAmbient</a> (Complete)</li>
+        <li><a href="#getDiffuse">getDiffuse</a> (Complete)</li>
+        <li><a href="#getSpecular">getSpecular</a> (Complete)</li>
+        <li><a href="#isInShadow">isInShadow</a> (Complete)</li>
+        <li>
+          <a href="#AffineShape::intersect">AffineShape::intersect</a>
+          (Complete)
+        </li>
+        <li><a href="#RayScene::Reflect">Scene::Reflect</a> (Complete)</li>
+        <li><a href="#transparency">transparency</a> (Complete)</li>
+        <li><a href="#Refract">Refract</a> (Complete)</li>
+        <li>
+          <a href="#Shape::updateBoundingBox">Shape::updateBoundingBox</a>
+          (Complete)
+        </li>
+        <li>
+          <a href="#AffineShape:updateBoundingBox"
+            >AffineShape:updateBoundingBox</a
+          >
+          (Complete)
+        </li>
+        <li>
+          <a href="#ShapeList::updateBoundingBox"
+            >ShapeList::updateBoundingBox</a
+          >
+          (Complete)
+        </li>
+        <li>
+          <a href="#BoundingBox::intersect">BoundingBox::intersect</a>
+          (Complete)
+        </li>
+        <li>
+          <a href="#Triangle::intersect">Triangle::intersect</a> (Complete)
+        </li>
+        <li>Supersampling< (None)</li>
+        <li>Other shapes (None)</li>
+        <li>Constructive solid geometry (None)</li>
+        <li>Procedural textures (None)</li>
+        <li>Bump mapping (None)</li>
+        <li>SIGGRAPH (None)</li>
+        <li>Other acceleration (None)</li>
+        <li><a href="#famous">Art</a></li>
+      </ul>
+
+      <h2>Implementation Details</h2>
+      <p>
+        Unless specified otherwise, all images were generated with the following
+        settings.
+      </p>
+      <code
+        >--width 640 --height 480 --rLimit 5 --cutOff 0.0001 --lSamples
+        100</code
+      >
+      <br />
+      <img src="dcalvo2_HTML/directional.jpeg" alt="that's me!" width="500px" />
+      <br />
+      <caption>
+        Fully-featured directional light.
+      </caption>
+      <br />
+
+      <img src="dcalvo2_HTML/point.jpeg" alt="that's me!" width="500px" />
+      <br />
+      <caption>
+        Fully-featured point light.
+      </caption>
+      <br />
+
+      <img src="dcalvo2_HTML/spot.jpeg" alt="that's me!" width="500px" />
+      <br />
+      <caption>
+        Fully-featured spot light.
+      </caption>
+      <br />
+
+      <img src="dcalvo2_HTML/sphere.jpeg" alt="that's me!" width="500px" />
+      <br />
+      <caption>
+        Fully-featured sphere light.
+      </caption>
+      <br />
+
+      <h3 id="Camera::getRay">Camera::getRay</h3>
+      <p>
+        Completey implemented. I define 3 points in space (by moving one unit
+        up-left, up-right, down-left) and then iterate through the (i,j) pixels.
+      </p>
+
+      <h3 id="ShapeList::intersect">ShapeList::intersect</h3>
+      <p>No notes. Completey implemented.</p>
+
+      <h3 id="Sphere::intersect">Sphere::intersect</h3>
+      <p>No notes. Completey implemented.</p>
+
+      <h3 id="TriangeList::intersect">TriangeList::intersect</h3>
+      <p>No notes. Completey implemented.</p>
+
+      <h3 id="Scene::getColor">Scene::getColor</h3>
+      <p>No notes. Completey implemented.</p>
+
+      <h3 id="getAmbient">getAmbient</h3>
+      <img
+        src="dcalvo2_HTML/ambient.jpeg"
+        alt="Black Hole Sun."
+        width="500px"
+      />
+      <br />
+      <p>
+        Completey implemented for all lights (directional, point, spot, sphere).
+      </p>
+
+      <h3 id="getDiffuse">getDiffuse</h3>
+      <img
+        src="dcalvo2_HTML/diffuse.jpeg"
+        alt="Black Hole Sun."
+        width="500px"
+      />
+      <br />
+      <p>
+        Completey implemented for all lights (directional, point, spot, sphere).
+      </p>
+
+      <h3 id="getSpecular">getSpecular</h3>
+      <img
+        src="dcalvo2_HTML/specular.jpeg"
+        alt="Black Hole Sun."
+        width="500px"
+      />
+      <br />
+      <p>
+        Completey implemented for all lights (directional, point, spot, sphere).
+      </p>
+
+      <h3 id="isInShadow">isInShadow</h3>
+      <p>
+        Completey implemented for all lights (directional, point, spot, sphere).
+      </p>
+
+      <h3 id="AffineShape::intersect">AffineShape::intersect</h3>
+      <p>
+        Completey implemented. I can't show a picture without this working as
+        it's nontrivial to individually turn off this feature in my raytracer.
+        If the affine transformation provided were 0, it should look like the
+        original images.
+      </p>
+
+      <h3 id="RayScene::Reflect">RayScene::Reflect</h3>
+      <img
+        src="dcalvo2_HTML/reflect.jpeg"
+        alt="Black Hole Sun."
+        width="500px"
+      />
+      <br />
+      <p>No notes. Completey implemented.</p>
+
+      <h3 id="transparency">transparency</h3>
+      <p>
+        Completey implemented for all lights (directional, point, spot, sphere).
+      </p>
+
+      <h3 id="Refract">Refract</h3>
+      <code>--fun</code>
+      <br />
+      <img
+        src="dcalvo2_HTML/refract.jpeg"
+        alt="Black Hole Sun."
+        width="500px"
+      />
+      <br />
+      <p>No notes. Completey implemented.</p>
+
+      <h3 id="Shape::updateBoundingBox">Shape::updateBoundingBox</h3>
+      <p>No notes. Completey implemented.</p>
+
+      <h3 id="AffineShape:updateBoundingBox">AffineShape:updateBoundingBox</h3>
+      <p>No notes. Completey implemented.</p>
+
+      <h3 id="ShapeList::updateBoundingBox">ShapeList::updateBoundingBox</h3>
+      <p>No notes. Completey implemented.</p>
+
+      <h3 id="BoundingBox::intersect">BoundingBox::intersect</h3>
+      <p>
+        Completey implemented, but I believe it is causing very slight
+        artifacting in images (random black spots and polygons) along
+        axis-aligned surfaces. This is most apparent on low-polygon models (the
+        dog), but almost unnoticeable on `david.ray` at higher resolutions.
+      </p>
+
+      <h3 id="Triangle::intersect">Triangle::intersect</h3>
+      <p>No notes. Completey implemented.</p>
+
+      <h3>Supersampling< (None)</h3>
+      <p>No notes. Not attempted.</p>
+
+      <h3>Other shapes (None)</h3>
+      <p>No notes. Not attempted.</p>
+
+      <h3>Constructive solid geometry (None)</h3>
+      <p>No notes. Not attempted.</p>
+
+      <h3>Procedural textures (None)</h3>
+      <p>No notes. Not attempted.</p>
+
+      <h3>Bump mapping (None)</h3>
+      <p>No notes. Not attempted.</p>
+
+      <h3>SIGGRAPH (None)</h3>
+      <p>No notes. Not attempted.</p>
+
+      <h3>Other acceleration (None)</h3>
+      <p>No notes. Not attempted.</p>
+
+      <h3 id="Art">Art Contest Submission</h3>
+      <code>--width 2560 --height 1440 -rLimit 10 -lsamples 150</code>
+      <br />
+      <img src="dcalvo2_HTML/art.jpeg" alt="that's me!" width="500px" />
+      <br />
+      <caption>
+        I unfortunately didn't have time to generate my own scene, so here's the
+        most high definition render available to me. There is slight artifacting
+        due to the issue mentioned in
+        <a href="#BoundingBox::intersect">BoundingBox::intersect</a
+        >. Otherwise, I think it looks pretty good.
+      </caption>
+    </div>
+  </body>
+</html>
